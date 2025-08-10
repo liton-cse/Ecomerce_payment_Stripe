@@ -2,6 +2,7 @@ import cardData from "../../cardData/cardData";
 import { useDispatch } from "react-redux";
 import { addToCart } from "../../redux/feature/cardSlice";
 import toast from "react-hot-toast";
+
 function Crad() {
   const dispatch = useDispatch();
 
@@ -9,11 +10,12 @@ function Crad() {
     dispatch(addToCart(item));
     toast.success("Card is Added!");
   };
+
   return (
-    <div className="grid grid-cols-2 xs:grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-3 md:gap-4 lg:gap-5 p-2 sm:p-4">
+    <div className="grid grid-cols-2 xs:grid-cols-2  sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-3 sm:gap-3 md:gap-4 lg:gap-5 p-2 sm:p-4">
       {cardData.map((item) => (
         <div
-          className="bg-white rounded-lg sm:rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 max-w-sm mx-auto w-full"
+          className="bg-white rounded-lg sm:rounded-xl shadow-md overflow-hidden hover:shadow-lg transition duration-300 max-w-sm mx-auto w-full flex flex-col"
           key={item.id}
         >
           {/* Food Image */}
@@ -24,7 +26,7 @@ function Crad() {
           />
 
           {/* Content */}
-          <div className="p-2 xs:p-3 sm:p-4 space-y-1 xs:space-y-2 sm:space-y-3">
+          <div className="p-2 xs:p-3 sm:p-4 space-y-1 xs:space-y-2 sm:space-y-3 flex flex-col flex-grow">
             {/* Row 1: Dish name and Rating */}
             <div className="flex items-start justify-between gap-1">
               <h2 className="text-sm xs:text-base sm:text-lg font-bold text-gray-800 leading-tight flex-1 min-w-0">
@@ -51,7 +53,7 @@ function Crad() {
             <hr className="border-t border-gray-200" />
 
             {/* Row 3: Bottom Actions */}
-            <div className="flex items-center justify-between gap-1 relative">
+            <div className="flex items-center justify-between gap-1 relative mt-auto">
               {/* Left: Arrow Image */}
               <div className="flex-shrink-0">
                 <img

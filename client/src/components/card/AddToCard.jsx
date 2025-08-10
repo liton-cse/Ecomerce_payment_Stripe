@@ -93,18 +93,18 @@ const AddToCard = () => {
   };
 
   return (
-    <div className="min-h-screen bg-gray-100 py-8 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-gray-100 py-8 px-4 mt-14 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
         <div className="bg-white shadow-md rounded-lg overflow-hidden">
           <div className="bg-gray-800 p-4 sm:p-6">
-            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
-              <h2 className="text-white text-xl font-semibold mb-2 sm:mb-0">
+            <div className="flex justify-between items-center">
+              <h2 className="text-white text-xl font-semibold">
                 Cart Calculation{card.length > 0 ? `(${card.length})` : ""}
               </h2>
               {card.length > 0 && (
                 <button
                   onClick={emptycart}
-                  className="bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded-md text-sm flex items-center"
+                  className="bg-red-600 hover:bg-red-700 text-white py-1 px-3 rounded-md text-sm flex items-center ml-4"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
@@ -296,8 +296,9 @@ const AddToCard = () => {
                 </div>
 
                 <div className="mt-6 border-t border-gray-200 pt-6">
-                  <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center">
-                    <div className="mb-4 sm:mb-0">
+                  <div className="flex justify-between items-center">
+                    {/* Items in cart - hidden on mobile, shown on desktop (left) */}
+                    <div className="hidden sm:block">
                       <p className="text-sm text-gray-600">
                         Items In Cart:{" "}
                         <span className="font-medium text-red-600 ml-1">
@@ -305,13 +306,36 @@ const AddToCard = () => {
                         </span>
                       </p>
                     </div>
-                    <div className="flex flex-col sm:flex-row items-end sm:items-center space-y-2 sm:space-y-0 sm:space-x-4">
+
+                    {/* Total price - middle on desktop, left on mobile */}
+                    <div className="hidden sm:block">
                       <p className="text-sm text-gray-600">
                         Total Price:{" "}
                         <span className="font-medium text-red-600 ml-1">
                           ₹{totalprice}
                         </span>
                       </p>
+                    </div>
+
+                    {/* Mobile: Total price and checkout button container */}
+                    <div className="flex items-center justify-between w-full sm:hidden space-x-4">
+                      <p className="text-sm text-gray-600">
+                        Total Price:{" "}
+                        <span className="font-medium text-red-600 ml-1">
+                          ₹{totalprice}
+                        </span>
+                      </p>
+
+                      <button
+                        onClick={makePayment}
+                        className="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-md text-sm font-medium"
+                      >
+                        Checkout
+                      </button>
+                    </div>
+
+                    {/* Desktop: Checkout button - right */}
+                    <div className="hidden sm:block">
                       <button
                         onClick={makePayment}
                         className="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-md text-sm font-medium"

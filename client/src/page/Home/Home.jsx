@@ -2,7 +2,7 @@ import CardDetails from "../../components/card/CardDetails";
 
 function Home() {
   return (
-    <div className="flex flex-col lg:flex-row p-2 sm:p-4 gap-2 sm:gap-4">
+    <div className="flex flex-col lg:flex-row p-2 mt-14 sm:p-6 gap-2 sm:gap-4 ">
       <aside className="hidden md:block lg:w-48 xl:w-56 2xl:w-64 bg-gray-100 p-2 sm:p-3 lg:p-4 rounded shadow">
         Left Aside
       </aside>

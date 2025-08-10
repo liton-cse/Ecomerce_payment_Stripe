@@ -23,12 +23,6 @@ function Cancel() {
 
         {/* Retry / Back Buttons */}
         <div className="mt-6 flex flex-col sm:flex-row gap-4 justify-center">
-          {/* <Link
-            to="/checkout"
-            className="bg-red-600 text-white px-6 py-2 rounded-lg shadow hover:bg-red-700 transition-colors"
-          >
-            Try Again
-          </Link> */}
           <Link
             to="/"
             className="bg-red-500 text-white px-6 py-2 rounded-lg shadow hover:bg-red-700 transition-colors"
