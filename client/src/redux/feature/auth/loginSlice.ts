@@ -1,36 +1,17 @@
 // authSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-
-interface LoginPayload {
-  email: string;
-  password: string;
-}
-
-interface UserData {
-  id: string;
-  name: string;
-  email: string;
-}
-
-interface AuthResponse {
-  token: string;
-  user: UserData;
-  message: string;
-  data: string;
-}
-
-interface AuthState {
-  loading: boolean;
-  error: string | null;
-  token: string | null;
-  user: UserData | null;
-}
+import {
+  LoginPayload,
+  AuthResponse,
+  LoginAuthState,
+} from "../../../type/auth/auth.type";
+import axiosInstance from "../../../utils/axios";
 
 const loginProcess = async (payload: LoginPayload): Promise<AuthResponse> => {
   try {
-    const response = await axios.post<AuthResponse>(
-      "http://10.10.7.99:5000/api/v1/auth/login",
+    const response = await axiosInstance.post<AuthResponse>(
+      "/auth/login",
       payload
     );
     // Store token in localStorage upon successful login
@@ -39,7 +20,7 @@ const loginProcess = async (payload: LoginPayload): Promise<AuthResponse> => {
     }
 
     return response.data;
-  } catch (err) {
+  } catch (err: any) {
     // Properly type the error
     if (axios.isAxiosError(err)) {
       throw err.response?.data || err.message;
@@ -72,7 +53,7 @@ export const login = createAsyncThunk<
   }
 });
 
-const initialState: AuthState = {
+const initialState: LoginAuthState = {
   user: null,
   token: localStorage.getItem("authToken") || null,
   loading: false,
@@ -80,7 +61,7 @@ const initialState: AuthState = {
 };
 
 const authSlice = createSlice({
-  name: "auth",
+  name: "loginAuth",
   initialState,
   reducers: {
     logout: (state) => {

@@ -9,12 +9,13 @@ import { useNavigate } from "react-router-dom";
 const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
   const { loading, error, token } = useSelector(
-    (state: RootState) => state.auth
+    (state: RootState) => state.loginAuth
   );
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState<string>("");
   const [password, setPassword] = useState<string>("");
+  const [rememberMe, setRememberMe] = useState<boolean>(false);
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -82,10 +83,11 @@ const Login = () => {
               <input
                 type="checkbox"
                 className="form-checkbox h-4 w-4 text-blue-600"
+                onChange={() => setRememberMe(!rememberMe)}
               />
               <span>Remember Password</span>
             </label>
-            <a href="reset-password" className="text-blue-600 hover:underline">
+            <a href="forget-password" className="text-blue-600 hover:underline">
               Forgot password?
             </a>
           </div>

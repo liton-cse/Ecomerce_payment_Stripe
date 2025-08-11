@@ -1,9 +1,9 @@
 import cardData from "../../cardData/cardData";
 import { useDispatch } from "react-redux";
-import { addToCart } from "../../redux/feature/cardSlice";
+import { addToCart } from "../../redux/feature/card/cardSlice";
 import toast from "react-hot-toast";
 
-function Crad() {
+function Card() {
   const dispatch = useDispatch();
 
   const handleAddCard = (item) => {
@@ -94,4 +94,4 @@ function Crad() {
   );
 }
 
-export default Crad;
+export default Card;

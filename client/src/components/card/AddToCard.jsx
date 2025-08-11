@@ -6,7 +6,7 @@ import {
   removeFromCart,
   removeSingleItem,
   emptyCart,
-} from "../../redux/feature/cardSlice";
+} from "../../redux/feature/card/cardSlice";
 import toast from "react-hot-toast";
 import { loadStripe } from "@stripe/stripe-js";
 

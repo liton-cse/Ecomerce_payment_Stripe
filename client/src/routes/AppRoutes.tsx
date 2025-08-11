@@ -1,8 +1,14 @@
 import { Suspense } from "react";
 import { useRoutes } from "react-router-dom";
-import { routes } from "./RouteConfig";
+import { useSelector } from "react-redux";
+import { RootState } from "../redux/app/store";
+import { publicRoutes, privateRoutes } from "./RouteConfig";
 
 const AppRoutes = () => {
+  const { token } = useSelector((state: RootState) => state.loginAuth);
+
+  const routes = token ? privateRoutes : publicRoutes;
+
   const element = useRoutes(
     routes.map(({ path, element: Element, layout: Layout }) => {
       const page = (

@@ -13,6 +13,7 @@ process.on('uncaughtException', error => {
   process.exit(1);
 });
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 let server: any;
 async function main() {
   try {
@@ -39,7 +40,8 @@ async function main() {
       },
     });
     socketHelper.socket(io);
-    //@ts-ignore
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    //@ts-expect-error
     global.io = io;
   } catch (error) {
     errorLogger.error(colors.red('🤢 Failed to connect Database'));
