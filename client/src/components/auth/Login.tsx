@@ -1,9 +1,10 @@
-import { useState, FormEvent, useEffect } from "react";
+import { useState, useEffect } from "react";
+import type { FormEvent } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import type { RootState, AppDispatch } from "../../redux/app/store";
+import type { RootState, AppDispatch } from "../../redux/app/store.js";
 import { Eye, EyeOff } from "lucide-react";
-import { login } from "../../redux/feature/auth/loginSlice";
-import LogoImage from "./LogoImage";
+import { login } from "../../redux/feature/auth/loginSlice.js";
+import LogoImage from "./LogoImage.js";
 import { useNavigate } from "react-router-dom";
 
 const Login = () => {

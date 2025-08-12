@@ -2,8 +2,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ShoppingCart, Menu, X } from "lucide-react";
 import { useState } from "react";
-import { logout } from "../../redux/feature/auth/loginSlice"; // path to your slice
-import { AppDispatch, RootState } from "../../redux/app/store";
+import { logout } from "../../redux/feature/auth/loginSlice.js"; // path to your slice
+import type { AppDispatch, RootState } from "../../redux/app/store.js";
 
 const Header = () => {
   const { card } = useSelector((state: RootState) => state.cart);

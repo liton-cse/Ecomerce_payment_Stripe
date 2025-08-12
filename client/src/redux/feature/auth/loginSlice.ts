@@ -1,12 +1,12 @@
 // authSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
-import {
+import type {
   LoginPayload,
   AuthResponse,
   LoginAuthState,
-} from "../../../type/auth/auth.type";
-import axiosInstance from "../../../utils/axios";
+} from "../../../type/auth/auth.type.js";
+import axiosInstance from "../../../utils/axios.js";
 
 const loginProcess = async (payload: LoginPayload): Promise<AuthResponse> => {
   try {

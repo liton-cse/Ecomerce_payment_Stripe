@@ -1,0 +1,39 @@
+export interface SubscriptionProduct {
+  id: number;
+  name: string;
+  description: string;
+  price: number;
+  billing_cycle: "monthly" | "yearly" | "weekly" | string;
+  image_url: string;
+  stripe_price_id?: string; // Added Stripe Price ID
+}
+
+export interface SpecialProductCardProps {
+  product: SubscriptionProduct;
+  stripePublicKey: string;
+}
+
+export interface ProductModalProps {
+  product: {
+    name: string;
+    description: string;
+    price: number;
+    image_url: string;
+    billing_cycle: string;
+  };
+  onClose: () => void;
+  onSubscribe: (e: React.MouseEvent) => void; // expects an event param
+  isSubscribing: boolean;
+}
+
+export interface SubscribePayload {
+  priceId: string;
+  productName: string;
+  billingCycle: string;
+  returnUrl: string;
+}
+
+export interface SubscriptionState {
+  loading: boolean;
+  error: string | null;
+}

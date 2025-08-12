@@ -1,15 +1,15 @@
 // pages/ChangePassword.tsx
 import { useEffect, useState } from "react";
 import { Eye, EyeOff } from "lucide-react";
-import FormInput from "./FormInput";
+import FormInput from "./FormInput.js";
 import { useNavigate } from "react-router-dom";
-import LogoImage from "./LogoImage";
+import LogoImage from "./LogoImage.js";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/app/store";
+import type { RootState } from "../../redux/app/store.js";
 import {
   clearResetPasswordState,
   resetPassword,
-} from "../../redux/feature/auth/resetPasswordSlice";
+} from "../../redux/feature/auth/resetPasswordSlice.js";
 import { useLocation } from "react-router-dom";
 
 const ChangePassword = () => {
@@ -18,7 +18,7 @@ const ChangePassword = () => {
   const [show, setShow] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
-  const { loading, error, success } = useSelector(
+  const { success } = useSelector(
     (state: RootState) => state.resetPasswordAuth
   );
   const dispatch = useDispatch<any>();

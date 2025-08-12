@@ -1,47 +1,47 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import axiosInstance from "../../utils/axios";
+import axiosInstance from "../../utils/axios.js";
 import {
   addToCart,
   removeFromCart,
   removeSingleItem,
   emptyCart,
-} from "../../redux/feature/card/cardSlice";
+} from "../../redux/feature/card/cardSlice.js";
 import toast from "react-hot-toast";
 import { loadStripe } from "@stripe/stripe-js";
+import {
+  useAppDispatch,
+  useAppSelector,
+  type RootState,
+} from "../../redux/app/store.js"; // ✅ Typed hooks
+import type { CartItem } from "../../type/product/product.type.js";
 
-const AddToCard = () => {
-  const { card } = useSelector((state) => state.cart);
-  const [totalprice, setPrice] = useState(0);
-  const [totalquantity, setTotalQuantity] = useState(0);
-  const dispatch = useDispatch();
+const AddToCard: React.FC = () => {
+  const { card } = useAppSelector((state: RootState) => state.cart);
+  const [totalprice, setPrice] = useState<number>(0);
+  const [totalquantity, setTotalQuantity] = useState<number>(0);
+  const dispatch = useAppDispatch(); // ✅ Now typed
 
-  // add to cart
-  const handleIncrement = (e) => {
-    dispatch(addToCart(e));
+  const handleIncrement = (item: CartItem) => {
+    dispatch(addToCart(item));
   };
 
-  // remove to cart
-  const handleDecrement = (e) => {
-    dispatch(removeFromCart(e));
-    toast.success("Item Remove From Your Cart");
+  const handleDecrement = (id: CartItem["id"]) => {
+    dispatch(removeFromCart(id));
+    (toast as any).success("Item Removed From Your Cart");
   };
 
-  // remove single item
-  const handleSingleDecrement = (e) => {
-    dispatch(removeSingleItem(e));
+  const handleSingleDecrement = (item: CartItem) => {
+    dispatch(removeSingleItem(item));
   };
 
-  // empty cart
   const emptycart = () => {
     dispatch(emptyCart());
-    toast.success("Your Cart is Empty");
+    (toast as any).success("Your Cart is Empty");
   };
 
-  // count total price
   const total = useCallback(() => {
     let totalprice = 0;
-    card.forEach((ele) => {
+    card.forEach((ele: CartItem) => {
       totalprice += ele.price * ele.qnty;
     });
     setPrice(totalprice);
@@ -49,7 +49,7 @@ const AddToCard = () => {
 
   const countquantity = useCallback(() => {
     let totalquantity = 0;
-    card.forEach((ele) => {
+    card.forEach((ele: CartItem) => {
       totalquantity += ele.qnty;
     });
     setTotalQuantity(totalquantity);
@@ -60,7 +60,6 @@ const AddToCard = () => {
     countquantity();
   }, [total, countquantity]);
 
-  // payment integration
   const makePayment = async () => {
     const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISH_KEY);
     if (!stripe) {
@@ -69,11 +68,9 @@ const AddToCard = () => {
     }
 
     try {
-      const { data: session } = await axiosInstance.post(
+      const { data: session } = await axiosInstance.post<{ id: string }>(
         "/products/create-checkout-session",
-        {
-          products: card, // Assuming `card` is in scope
-        }
+        { products: card }
       );
 
       if (!session.id) {
@@ -158,46 +155,28 @@ const AddToCard = () => {
                   <table className="min-w-full divide-y divide-gray-200">
                     <thead className="bg-gray-50">
                       <tr>
-                        <th
-                          scope="col"
-                          className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Action
                         </th>
-                        <th
-                          scope="col"
-                          className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Product
                         </th>
-                        <th
-                          scope="col"
-                          className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Name
                         </th>
-                        <th
-                          scope="col"
-                          className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Price
                         </th>
-                        <th
-                          scope="col"
-                          className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
+                        <th className="px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Qty
                         </th>
-                        <th
-                          scope="col"
-                          className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider"
-                        >
+                        <th className="px-4 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
                           Total Amount
                         </th>
                       </tr>
                     </thead>
                     <tbody className="bg-white divide-y divide-gray-200">
-                      {card.map((data, index) => (
+                      {card.map((data: CartItem, index: number) => (
                         <tr key={index}>
                           <td className="px-4 py-4 whitespace-nowrap">
                             <button
@@ -225,7 +204,7 @@ const AddToCard = () => {
                               <img
                                 className="h-10 w-10 rounded-md object-cover"
                                 src={data.imgdata}
-                                alt=""
+                                alt={data.dish}
                               />
                             </div>
                           </td>
@@ -297,35 +276,29 @@ const AddToCard = () => {
 
                 <div className="mt-6 border-t border-gray-200 pt-6">
                   <div className="flex justify-between items-center">
-                    {/* Items in cart - hidden on mobile, shown on desktop (left) */}
                     <div className="hidden sm:block">
                       <p className="text-sm text-gray-600">
-                        Items In Cart:{" "}
+                        Items In Cart:
                         <span className="font-medium text-red-600 ml-1">
                           {totalquantity}
                         </span>
                       </p>
                     </div>
-
-                    {/* Total price - middle on desktop, left on mobile */}
                     <div className="hidden sm:block">
                       <p className="text-sm text-gray-600">
-                        Total Price:{" "}
+                        Total Price:
                         <span className="font-medium text-red-600 ml-1">
                           ₹{totalprice}
                         </span>
                       </p>
                     </div>
-
-                    {/* Mobile: Total price and checkout button container */}
                     <div className="flex items-center justify-between w-full sm:hidden space-x-4">
                       <p className="text-sm text-gray-600">
-                        Total Price:{" "}
+                        Total Price:
                         <span className="font-medium text-red-600 ml-1">
                           ₹{totalprice}
                         </span>
                       </p>
-
                       <button
                         onClick={makePayment}
                         className="bg-green-600 hover:bg-green-700 text-white py-2 px-6 rounded-md text-sm font-medium"
@@ -333,8 +306,6 @@ const AddToCard = () => {
                         Checkout
                       </button>
                     </div>
-
-                    {/* Desktop: Checkout button - right */}
                     <div className="hidden sm:block">
                       <button
                         onClick={makePayment}

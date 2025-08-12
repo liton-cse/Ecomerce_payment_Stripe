@@ -1,8 +1,8 @@
-import type { JSX, LazyExoticComponent } from "react";
+import type { LazyExoticComponent, FC } from "react";
 
 export interface AppRoute {
   path: string;
-  element: LazyExoticComponent<() => JSX.Element>;
+  element: LazyExoticComponent<FC<any>>;
   layout?: LazyExoticComponent<
     React.ComponentType<{ children: React.ReactNode }>
   > | null;

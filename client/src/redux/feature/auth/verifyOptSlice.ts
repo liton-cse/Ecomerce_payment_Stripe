@@ -1,11 +1,15 @@
 // src/redux/features/forgetAuthSlice.ts
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axiosInstance from "../../../utils/axios";
 import {
+  createSlice,
+  createAsyncThunk,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
+import axiosInstance from "../../../utils/axios.js";
+import type {
   verifyEmailAuthState,
   AuthResponse,
   verifyOtpPayload,
-} from "../../../type/auth/auth.type";
+} from "../../../type/auth/auth.type.js";
 
 const initialState: verifyEmailAuthState = {
   email: "",

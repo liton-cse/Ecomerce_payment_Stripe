@@ -1,8 +1,8 @@
 import { Suspense } from "react";
 import { useRoutes } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { RootState } from "../redux/app/store";
-import { publicRoutes, privateRoutes } from "./RouteConfig";
+import type { RootState } from "../redux/app/store.js";
+import { publicRoutes, privateRoutes } from "./RouteConfig.js";
 
 const AppRoutes = () => {
   const { token } = useSelector((state: RootState) => state.loginAuth);

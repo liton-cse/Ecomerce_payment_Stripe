@@ -1,11 +1,11 @@
 // pages/ResetPassword.tsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import FormInput from "./FormInput";
-import LogoImage from "./LogoImage";
+import FormInput from "./FormInput.js";
+import LogoImage from "./LogoImage.js";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/app/store";
-import { forgetPassword } from "../../redux/feature/auth/forgetPasswordSlice";
+import type { RootState } from "../../redux/app/store.js";
+import { forgetPassword } from "../../redux/feature/auth/forgetPasswordSlice.js";
 
 const ResetPassword = () => {
   const [email, setEmail] = useState<string>("");

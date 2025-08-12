@@ -1,12 +1,12 @@
 // pages/ResetPassword.tsx
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import FormInput from "./FormInput";
-import LogoImage from "./LogoImage";
+import FormInput from "./FormInput.js";
+import LogoImage from "./LogoImage.js";
 import { useDispatch, useSelector } from "react-redux";
-import { RootState } from "../../redux/app/store";
+import type { RootState } from "../../redux/app/store.js";
 import { useLocation } from "react-router-dom";
-import { verifyOtp } from "../../redux/feature/auth/verifyOptSlice";
+import { verifyOtp } from "../../redux/feature/auth/verifyOptSlice.js";
 
 const VerifyEmail = () => {
   const [otp, setOtp] = useState<string>("");

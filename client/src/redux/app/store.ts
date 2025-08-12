@@ -1,9 +1,11 @@
 import { configureStore } from "@reduxjs/toolkit";
-import cardReducer from "../feature/card/cardSlice";
-import authReducer from "../feature/auth/loginSlice";
-import forgetPasswordReducer from "../feature/auth/forgetPasswordSlice";
-import verifyEmailReducer from "../feature/auth/verifyOptSlice";
-import resetPaswordReducer from "../feature/auth/resetPasswordSlice";
+import { useDispatch, useSelector } from "react-redux";
+import type { TypedUseSelectorHook } from "react-redux";
+import cardReducer from "../feature/card/cardSlice.js";
+import authReducer from "../feature/auth/loginSlice.js";
+import forgetPasswordReducer from "../feature/auth/forgetPasswordSlice.js";
+import verifyEmailReducer from "../feature/auth/verifyOptSlice.js";
+import resetPaswordReducer from "../feature/auth/resetPasswordSlice.js";
 
 export const store = configureStore({
   reducer: {
@@ -15,5 +17,11 @@ export const store = configureStore({
   },
 });
 
+// Infer RootState from the store's getState method
 export type RootState = ReturnType<typeof store.getState>;
+
 export type AppDispatch = typeof store.dispatch;
+
+export const useAppDispatch = () => useDispatch<AppDispatch>();
+
+export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;

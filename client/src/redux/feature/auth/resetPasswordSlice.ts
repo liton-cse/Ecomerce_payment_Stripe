@@ -1,9 +1,10 @@
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
-import axiosInstance from "../../../utils/axios";
-import {
+import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+
+import axiosInstance from "../../../utils/axios.js";
+import type {
   ResetPasswordState,
   ResetPasswordPayload,
-} from "../../../type/auth/auth.type";
+} from "../../../type/auth/auth.type.js";
 
 // Initial state
 const initialState: ResetPasswordState = {

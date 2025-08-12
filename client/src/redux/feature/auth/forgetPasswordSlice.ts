@@ -1,11 +1,15 @@
 // features/auth/authSlice.ts
-import { createSlice, createAsyncThunk, PayloadAction } from "@reduxjs/toolkit";
 import {
+  createSlice,
+  createAsyncThunk,
+  type PayloadAction,
+} from "@reduxjs/toolkit";
+import type {
   AuthResponse,
   forgetPayload,
   ForgetAuthState,
-} from "../../../type/auth/auth.type";
-import axiosInstance from "../../../utils/axios";
+} from "../../../type/auth/auth.type.js";
+import axiosInstance from "../../../utils/axios.js";
 
 // API function
 const forgetPasswordApiResponse = async (
