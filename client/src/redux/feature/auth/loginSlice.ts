@@ -1,33 +1,11 @@
 // authSlice.js
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import axios from "axios";
 import type {
   LoginPayload,
   AuthResponse,
   LoginAuthState,
 } from "../../../type/auth/auth.type.js";
-import axiosInstance from "../../../utils/axios.js";
-
-const loginProcess = async (payload: LoginPayload): Promise<AuthResponse> => {
-  try {
-    const response = await axiosInstance.post<AuthResponse>(
-      "/auth/login",
-      payload
-    );
-    // Store token in localStorage upon successful login
-    if (response.data.data) {
-      localStorage.setItem("authToken", response.data.data);
-    }
-
-    return response.data;
-  } catch (err: any) {
-    // Properly type the error
-    if (axios.isAxiosError(err)) {
-      throw err.response?.data || err.message;
-    }
-    throw new Error("Login failed");
-  }
-};
+import { loginProcess } from "../../apiAction/auth/authApi.js";
 
 export const login = createAsyncThunk<
   AuthResponse,

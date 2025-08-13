@@ -6,6 +6,7 @@ const specialProduct = [
     price: 22.99,
     billing_cycle: "monthly",
     image_url: "https://cdn-icons-png.flaticon.com/512/732/732228.png",
+    stripe_price_id: "price_1RvMbRLYjp5zK6UojQQZ6Bbi",
   },
   {
     id: 2,
@@ -14,6 +15,7 @@ const specialProduct = [
     price: 16.99,
     billing_cycle: "monthly",
     image_url: "https://cdn-icons-png.flaticon.com/512/2111/2111624.png",
+    stripe_price_id: "price_1RstpgLYjp5zK6Uo1wflIU7e",
   },
   {
     id: 3,
@@ -22,6 +24,7 @@ const specialProduct = [
     price: 54.99,
     billing_cycle: "monthly",
     image_url: "https://cdn-icons-png.flaticon.com/512/2702/2702602.png",
+    stripe_price_id: "price_1Rstp7LYjp5zK6UoeW1V38Zx",
   },
   {
     id: 4,
@@ -30,6 +33,7 @@ const specialProduct = [
     price: 14.99,
     billing_cycle: "monthly",
     image_url: "https://cdn-icons-png.flaticon.com/512/731/731985.png",
+    stripe_price_id: "price_1RvS6ELYjp5zK6Uo0PCwcF8Q",
   },
   {
     id: 5,

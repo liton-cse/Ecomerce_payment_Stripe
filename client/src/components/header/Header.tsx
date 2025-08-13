@@ -107,67 +107,58 @@ const Header = () => {
       </div>
 
       {/* Mobile Navigation */}
-      {menuOpen && (
-        <div className="md:hidden bg-gray-50 shadow-md px-4 py-4 space-y-3">
-          {!token ? (
-            <>
-              <Link
-                to="/"
-                className="block hover:text-indigo-600 transition duration-300"
-                onClick={() => setMenuOpen(false)}
-              >
-                Login
-              </Link>
-              <Link
-                to="/register"
-                className="block hover:text-indigo-600 transition duration-300"
-                onClick={() => setMenuOpen(false)}
-              >
-                Register
-              </Link>
-            </>
-          ) : (
-            <>
-              <Link
-                to="/"
-                className="block hover:text-indigo-600 transition duration-300"
-                onClick={() => setMenuOpen(false)}
-              >
-                Home
-              </Link>
-              <Link
-                to="/special-products"
-                className="block hover:text-indigo-600 transition duration-300"
-                onClick={() => setMenuOpen(false)}
-              >
-                Special Products
-              </Link>
-              <Link
-                to="#"
-                className="block hover:text-indigo-600 transition duration-300"
-                onClick={() => {
-                  setMenuOpen(false);
-                  handleLogout();
-                }}
-              >
-                Logout
-              </Link>
-              {/* Cart visible in mobile nav as well if needed */}
-              <Link
-                to="/card-details"
-                className="relative group p-2 rounded-full hover:bg-gray-100 transition duration-300"
-                aria-label="Cart"
-                onClick={() => setMenuOpen(false)}
-              >
-                <ShoppingCart className="w-6 h-6 text-gray-700 group-hover:text-indigo-600" />
-                <span className="absolute -top-1 -right-1 text-xs bg-indigo-600 text-white rounded-full px-1.5 py-0.5">
-                  {card.length}
-                </span>
-              </Link>
-            </>
-          )}
-        </div>
-      )}
+      {/* Mobile Navigation */}
+      <div
+        className={`md:hidden bg-gray-50 shadow-md px-4 overflow-hidden transition-all duration-500 ease-in-out ${
+          menuOpen ? "max-h-96 py-4" : "max-h-0 py-0"
+        }`}
+      >
+        {!token ? (
+          <>
+            <Link
+              to="/"
+              className="block hover:text-indigo-600 transition duration-300 text-black font-medium"
+              onClick={() => setMenuOpen(false)}
+            >
+              Login
+            </Link>
+            <Link
+              to="/register"
+              className="block hover:text-indigo-600 transition duration-300 text-black font-medium"
+              onClick={() => setMenuOpen(false)}
+            >
+              Register
+            </Link>
+          </>
+        ) : (
+          <>
+            <Link
+              to="/"
+              className="block hover:text-indigo-600 transition duration-300 text-black font-medium"
+              onClick={() => setMenuOpen(false)}
+            >
+              Home
+            </Link>
+            <Link
+              to="/special-products"
+              className="block hover:text-indigo-600 transition duration-300 text-black font-medium"
+              onClick={() => setMenuOpen(false)}
+            >
+              Special Products
+            </Link>
+            <Link
+              to="#"
+              className="block hover:text-indigo-600 transition duration-300 text-black font-medium"
+              onClick={() => {
+                setMenuOpen(false);
+                handleLogout();
+              }}
+            >
+              Logout
+            </Link>
+          </>
+        )}
+      </div>
     </header>
   );
 };

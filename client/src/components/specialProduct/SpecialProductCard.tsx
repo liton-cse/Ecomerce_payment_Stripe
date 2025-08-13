@@ -1,14 +1,16 @@
 import React, { useState } from "react";
-import { loadStripe } from "@stripe/stripe-js";
-import type { SpecialProductCardProps } from "../../type/SepcialProduct/spacialProduct.type.js";
+import type {
+  SpecialProductCardProps,
+  SubscribePayload,
+} from "../../type/SepcialProduct/spacialProduct.type.js";
 import ProductModal from "./SpecialProductModal.js";
-
-const SpecialProductCard: React.FC<SpecialProductCardProps> = ({
-  product,
-  stripePublicKey,
-}) => {
+import { subscribe } from "../../redux/feature/Special_Product/subscriptionSlice.js";
+import { useAppDispatch, useAppSelector } from "../../redux/app/store.js";
+const SpecialProductCard: React.FC<SpecialProductCardProps> = ({ product }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const dispatch = useAppDispatch();
+  const [localLoading, setLocalLoading] = useState(false);
+  const { loading } = useAppSelector((state) => state.subscribe);
 
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-US", {
@@ -29,39 +31,16 @@ const SpecialProductCard: React.FC<SpecialProductCardProps> = ({
   };
 
   const handleSubscribe = async (e: React.MouseEvent) => {
-    e.stopPropagation(); // Prevent modal from opening
-    if (!product.stripe_price_id) return;
-
-    setIsLoading(true);
-
+    e.stopPropagation();
+    const payload: SubscribePayload = {
+      priceId: product.stripe_price_id ?? "",
+      productName: product.name ?? "",
+      billingCycle: product.billing_cycle ?? "",
+    };
     try {
-      const stripe = await loadStripe(stripePublicKey);
-      if (!stripe) throw new Error("Stripe failed to initialize");
-
-      const response = await fetch("/api/create-checkout-session", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          priceId: product.stripe_price_id,
-          productName: product.name,
-          billingCycle: product.billing_cycle,
-          returnUrl: window.location.href,
-        }),
-      });
-
-      if (!response.ok) throw new Error("Failed to create checkout session");
-
-      const { id: sessionId } = await response.json();
-      const result = await stripe.redirectToCheckout({ sessionId });
-
-      if (result.error) throw result.error;
-    } catch (error) {
-      console.error("Checkout error:", error);
-      // Consider adding user feedback here (toast, alert, etc.)
+      await dispatch(subscribe(payload)).unwrap();
     } finally {
-      setIsLoading(false);
+      setLocalLoading(false);
     }
   };
 
@@ -113,7 +92,7 @@ const SpecialProductCard: React.FC<SpecialProductCardProps> = ({
 
           <button
             onClick={handleSubscribe}
-            disabled={!product.stripe_price_id || isLoading}
+            disabled={!product.stripe_price_id || localLoading}
             className={`w-full py-2 px-4 rounded-lg transition-colors duration-300 flex items-center justify-center ${
               product.stripe_price_id
                 ? "bg-indigo-600 hover:bg-indigo-700 text-white"
@@ -123,7 +102,7 @@ const SpecialProductCard: React.FC<SpecialProductCardProps> = ({
               product.price
             )}${getBillingCycleText(product.billing_cycle)}`}
           >
-            {isLoading ? (
+            {localLoading ? (
               <>
                 <svg
                   className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
@@ -167,7 +146,7 @@ const SpecialProductCard: React.FC<SpecialProductCardProps> = ({
           product={product}
           onClose={() => setIsModalOpen(false)}
           onSubscribe={handleSubscribe}
-          isSubscribing={isLoading}
+          isSubscribing={loading}
         />
       )}
     </div>

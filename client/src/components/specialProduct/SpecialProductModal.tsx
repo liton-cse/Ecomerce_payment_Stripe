@@ -60,8 +60,8 @@ const ProductModal: React.FC<ProductModalProps> = ({
               </span>
 
               <button
-                className="bg-indigo-600 hover:bg-indigo-700 text-white px-6 py-2 rounded-lg transition-colors"
-                onClick={() => onSubscribe(product)}
+                className="bg-indigo-600 hover:bg-indigo-700 text-white px-2 py-2 rounded-lg transition-colors"
+                onClick={(e) => onSubscribe(e, product)}
               >
                 Subscribe Now
               </button>

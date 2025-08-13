@@ -4,10 +4,15 @@ import { useSearchParams } from "react-router-dom";
 
 function Success() {
   const [searchParams] = useSearchParams();
-  const orderId = searchParams.get("orderId");
+  let orderId = searchParams.get("orderId");
+  const success = searchParams.get("success") === "true";
+  const sessionId = searchParams.get("session_id");
+  if (success && sessionId && !orderId) {
+    orderId = sessionId;
+  }
 
   return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex flex-col items-center justify-center bg-gray-50 px-4 mt-8">
       <div className="bg-white shadow-lg rounded-lg p-6 sm:p-8 md:p-10 max-w-md sm:max-w-lg md:max-w-xl w-full text-center">
         <CheckCircle className="w-16 h-16 text-green-500 mx-auto mb-4" />
 
@@ -21,8 +26,10 @@ function Success() {
 
         {/* Order summary */}
         <div className="mt-6 border-t border-b py-4">
-          <p className="text-xs sm:text-sm text-gray-500">Order Number</p>
-          <p className="text-lg sm:text-xl font-semibold text-gray-800">
+          <p className="text-xs sm:text-sm text-gray-500">
+            {success && sessionId ? "Session ID: " : "Order Number: "}
+          </p>
+          <p className="text-lg sm:text-xl font-semibold text-gray-800 break-words">
             {orderId}
           </p>
           <p className="text-xs sm:text-sm text-gray-500 mt-2">

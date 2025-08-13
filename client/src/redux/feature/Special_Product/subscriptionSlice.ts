@@ -1,12 +1,10 @@
 // src/store/slices/subscriptionSlice.ts
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { loadStripe } from "@stripe/stripe-js";
 import type {
   SubscribePayload,
   SubscriptionState,
 } from "../../../type/SepcialProduct/spacialProduct.type.js";
-
-const stripePublicKey = process.env.REACT_APP_STRIPE_PUBLIC_KEY!;
+import { subscribeApiResponse } from "../../apiAction/products/product.action.js";
 
 const initialState: SubscriptionState = {
   loading: false,
@@ -19,31 +17,16 @@ export const subscribe = createAsyncThunk<
   { rejectValue: string }
 >(
   "subscription/subscribe",
-  async (
-    { priceId, productName, billingCycle, returnUrl },
-    { rejectWithValue }
-  ) => {
+  async (payload: SubscribePayload, { rejectWithValue }) => {
     try {
-      // your existing logic, e.g.:
-      const stripe = await loadStripe(stripePublicKey);
-      if (!stripe) throw new Error("Stripe failed to initialize");
-
-      const response = await fetch("/api/create-checkout-session", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ priceId, productName, billingCycle, returnUrl }),
-      });
-
-      if (!response.ok) throw new Error("Failed to create checkout session");
-
-      const { id: sessionId } = await response.json();
-
-      const result = await stripe.redirectToCheckout({ sessionId });
-      if (result.error) throw result.error;
-
+      await subscribeApiResponse(payload);
       return; // <--- Add this explicit return here
     } catch (error: any) {
-      return rejectWithValue(error.message);
+      // Ensure error.message exists and is string
+      if (error && error.message && typeof error.message === "string") {
+        return rejectWithValue(error.message);
+      }
+      return rejectWithValue("Unknown error occurred");
     }
   }
 );
@@ -51,7 +34,11 @@ export const subscribe = createAsyncThunk<
 const subscriptionSlice = createSlice({
   name: "subscription",
   initialState,
-  reducers: {},
+  reducers: {
+    clearError(state) {
+      state.error = null;
+    },
+  },
   extraReducers: (builder) => {
     builder
       .addCase(subscribe.pending, (state) => {

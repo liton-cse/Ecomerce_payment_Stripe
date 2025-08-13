@@ -9,22 +9,7 @@ import type {
   forgetPayload,
   ForgetAuthState,
 } from "../../../type/auth/auth.type.js";
-import axiosInstance from "../../../utils/axios.js";
-
-// API function
-const forgetPasswordApiResponse = async (
-  payload: forgetPayload
-): Promise<AuthResponse> => {
-  try {
-    const response = await axiosInstance.post<AuthResponse>(
-      "/auth/forget-password",
-      payload
-    );
-    return response.data;
-  } catch (error: any) {
-    throw error.response?.data || { message: "Something went wrong" };
-  }
-};
+import { forgetPasswordApiResponse } from "../../apiAction/auth/authApi.js";
 
 // Async thunk
 export const forgetPassword = createAsyncThunk<

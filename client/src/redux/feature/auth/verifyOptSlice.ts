@@ -4,7 +4,7 @@ import {
   createAsyncThunk,
   type PayloadAction,
 } from "@reduxjs/toolkit";
-import axiosInstance from "../../../utils/axios.js";
+import { verifyOtpApiResponse } from "../../apiAction/auth/authApi.js";
 import type {
   verifyEmailAuthState,
   AuthResponse,
@@ -17,20 +17,6 @@ const initialState: verifyEmailAuthState = {
   error: null,
   success: false,
   token: null,
-};
-
-const verifyOtpApiResponse = async (
-  payload: verifyOtpPayload
-): Promise<AuthResponse> => {
-  try {
-    const response = await axiosInstance.post<AuthResponse>(
-      "/auth/verify-email",
-      payload
-    );
-    return response.data;
-  } catch (error: any) {
-    throw error.response?.data || { message: "Something went wrong" };
-  }
 };
 
 // Async thunk to verify OTP

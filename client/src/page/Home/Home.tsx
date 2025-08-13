@@ -2,7 +2,7 @@ import CardDetails from "../../components/card/CardDetails.js";
 import Aside from "../../layouts/AsideLayout.js";
 function Home() {
   return (
-    <div>
+    <div className="mt-4">
       <Aside>
         <CardDetails />
       </Aside>

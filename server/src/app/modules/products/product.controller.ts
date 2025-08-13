@@ -8,7 +8,7 @@ import path from 'path';
 import { errorLogger } from '../../../shared/logger';
 import { CheckoutRequestBody } from '../../../types/product';
 
-const stripe = new Stripe(process.env.STRIPE_SECRET as string, {
+const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2025-07-30.basil',
 });
 

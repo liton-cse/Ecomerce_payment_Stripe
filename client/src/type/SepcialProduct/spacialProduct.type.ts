@@ -10,7 +10,6 @@ export interface SubscriptionProduct {
 
 export interface SpecialProductCardProps {
   product: SubscriptionProduct;
-  stripePublicKey: string;
 }
 
 export interface ProductModalProps {
@@ -22,15 +21,19 @@ export interface ProductModalProps {
     billing_cycle: string;
   };
   onClose: () => void;
-  onSubscribe: (e: React.MouseEvent) => void; // expects an event param
+  onSubscribe: (
+    e: React.MouseEvent,
+    product: ProductModalProps["product"]
+  ) => void;
+
   isSubscribing: boolean;
 }
 
 export interface SubscribePayload {
-  priceId: string;
+  priceId: string | undefined;
   productName: string;
   billingCycle: string;
-  returnUrl: string;
+  returnUrl?: string;
 }
 
 export interface SubscriptionState {

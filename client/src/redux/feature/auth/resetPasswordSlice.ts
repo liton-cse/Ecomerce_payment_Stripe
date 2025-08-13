@@ -1,29 +1,14 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-
-import axiosInstance from "../../../utils/axios.js";
 import type {
   ResetPasswordState,
   ResetPasswordPayload,
 } from "../../../type/auth/auth.type.js";
-
+import { resetPasswordApi } from "../../apiAction/auth/authApi.js";
 // Initial state
 const initialState: ResetPasswordState = {
   loading: false,
   error: null,
   success: false,
-};
-
-// Separate API function
-const resetPasswordApi = async (
-  payload: ResetPasswordPayload
-): Promise<ResetPasswordState> => {
-  const { token, ...body } = payload;
-  const res = await axiosInstance.post("/auth/reset-password", body, {
-    headers: {
-      Authorization: `${token}`,
-    },
-  });
-  return res.data;
 };
 
 // Async thunk

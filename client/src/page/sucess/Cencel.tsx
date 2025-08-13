@@ -3,7 +3,7 @@ import { XCircle } from "lucide-react";
 
 function Cancel() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 px-4 mt-8">
       <div className="bg-white shadow-lg rounded-lg p-8 max-w-md w-full text-center">
         <XCircle className="w-16 h-16 text-red-500 mx-auto mb-4" />
 
