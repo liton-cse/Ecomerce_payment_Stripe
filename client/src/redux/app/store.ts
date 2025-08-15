@@ -7,6 +7,7 @@ import forgetPasswordReducer from "../feature/auth/forgetPasswordSlice.js";
 import verifyEmailReducer from "../feature/auth/verifyOptSlice.js";
 import resetPaswordReducer from "../feature/auth/resetPasswordSlice.js";
 import subscribeReducer from "../feature/Special_Product/subscriptionSlice.js";
+import fcmTokenReducer from "../feature/fcmToken/fcmTokenSlice.js";
 
 export const store = configureStore({
   reducer: {
@@ -16,6 +17,7 @@ export const store = configureStore({
     verifyEmailAuth: verifyEmailReducer,
     resetPasswordAuth: resetPaswordReducer,
     subscribe: subscribeReducer,
+    fcmToken: fcmTokenReducer,
   },
 });
 

@@ -23,7 +23,7 @@ const Header = () => {
 
   return (
     <header className="w-full bg-gray-50 text-gray-900 shadow-md fixed top-0 z-50">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-3 md:px-8">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-6 md:px-8">
         {/* Logo */}
         <h1 className="text-xl font-bold md:text-2xl tracking-tight">
           <Link

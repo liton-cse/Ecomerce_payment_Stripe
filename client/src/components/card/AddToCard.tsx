@@ -14,6 +14,7 @@ import {
   type RootState,
 } from "../../redux/app/store.js"; // ✅ Typed hooks
 import type { CartItem } from "../../type/product/product.type.js";
+import { getFcmToken } from "../../redux/feature/fcmToken/fcmTokenSlice.js";
 
 const AddToCard: React.FC = () => {
   const { card } = useAppSelector((state: RootState) => state.cart);
@@ -60,17 +61,26 @@ const AddToCard: React.FC = () => {
     countquantity();
   }, [total, countquantity]);
 
+  // useEffect(() => {
+  //   const fetchToken = async () => {
+  //     const token = await dispatch(getFcmToken()).unwrap(); // unwrap gives the actual payload
+  //     console.log("FCM Token:", token);
+  //   };
+
+  //   fetchToken();
+  // }, [dispatch]);
+
   const makePayment = async () => {
     const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISH_KEY);
     if (!stripe) {
       console.error("Stripe failed to load.");
       return;
     }
-
+    const token = await dispatch(getFcmToken()).unwrap();
     try {
       const { data: session } = await axiosInstance.post<{ id: string }>(
         "/products/create-checkout-session",
-        { products: card }
+        { products: card, token }
       );
 
       if (!session.id) {

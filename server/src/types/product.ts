@@ -7,4 +7,5 @@ export type Product = {
 
 export type CheckoutRequestBody = {
   products: Product[];
+  token: string | null;
 };
