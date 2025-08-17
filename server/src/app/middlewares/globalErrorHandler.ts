@@ -7,7 +7,12 @@ import handleZodError from '../../errors/handleZodError';
 import { errorLogger, logger } from '../../shared/logger';
 import { IErrorMessage } from '../../types/errors.types';
 
-const globalErrorHandler: ErrorRequestHandler = (error, req, res) => {
+const globalErrorHandler: ErrorRequestHandler = (error, req, res, next) => {
+  if (!res || typeof res.status !== 'function') {
+    console.error('Cannot send response, res is invalid', error);
+    return; // Prevent further crashes
+  }
+
   if (config.node_env === 'development') {
     logger.info('🚨 globalErrorHandler ~~ ', error);
   } else {
@@ -31,36 +36,29 @@ const globalErrorHandler: ErrorRequestHandler = (error, req, res) => {
   } else if (error.name === 'TokenExpiredError') {
     statusCode = StatusCodes.UNAUTHORIZED;
     message = 'Session Expired';
-    errorMessages = error?.message
-      ? [
-          {
-            path: '',
-            message:
-              'Your session has expired. Please log in again to continue.',
-          },
-        ]
-      : [];
+    errorMessages = [
+      {
+        path: '',
+        message: 'Your session has expired. Please log in again to continue.',
+      },
+    ];
   } else if (error instanceof ApiError) {
     statusCode = error.statusCode;
     message = error.message;
-    errorMessages = error.message
-      ? [
-          {
-            path: '',
-            message: error.message,
-          },
-        ]
-      : [];
+    errorMessages = [
+      {
+        path: '',
+        message: error.message,
+      },
+    ];
   } else if (error instanceof Error) {
     message = error.message;
-    errorMessages = error.message
-      ? [
-          {
-            path: '',
-            message: error?.message,
-          },
-        ]
-      : [];
+    errorMessages = [
+      {
+        path: '',
+        message: error.message,
+      },
+    ];
   }
 
   res.status(statusCode).json({

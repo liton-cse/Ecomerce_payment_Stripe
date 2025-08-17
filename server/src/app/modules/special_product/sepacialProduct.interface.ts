@@ -4,5 +4,6 @@ export type CreateCheckoutSessionBody = {
   productName: string;
   billingCycle: string;
   returnUrl: string;
+  token: string;
 };
 export type apiVersion = '2020-08-27' | '2022-11-15' | '2024-06-20';

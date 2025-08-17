@@ -4,11 +4,23 @@ import { StatusCodes } from 'http-status-codes';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import router from './routes';
 import { Morgan } from './shared/morgen';
+import bodyParser from 'body-parser';
+import { handleStripeWebhook } from './app/modules/products/product.controller';
 const app = express();
 
 //morgan
 app.use(Morgan.successHandler);
 app.use(Morgan.errorHandler);
+app.post(
+  '/api/v1/products/webhook',
+  bodyParser.raw({ type: 'application/json' }),
+  handleStripeWebhook
+);
+app.post(
+  '/api/v1/spacial/products/webhook',
+  bodyParser.raw({ type: 'application/json' }),
+  handleStripeWebhook
+);
 
 //body parser
 app.use(cors());

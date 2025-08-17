@@ -30,10 +30,12 @@ export interface ProductModalProps {
 }
 
 export interface SubscribePayload {
-  priceId: string | undefined;
-  productName: string;
-  billingCycle: string;
-  returnUrl?: string;
+  products: {
+    priceId: string;
+    productName: string;
+    billingCycle: string;
+  };
+  token: string;
 }
 
 export interface SubscriptionState {

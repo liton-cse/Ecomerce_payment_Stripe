@@ -9,12 +9,12 @@ export const subscribeApiResponse = async (
 ): Promise<void> => {
   // Load Stripe
   const stripe = await loadStripe(stripePublicKey);
-  console.log(stripe);
+
   if (!stripe) {
     throw new Error("Stripe failed to initialize");
   }
   const response = await axiosInstance.post(
-    "/special/products/create-checkout-session",
+    "/products/create-checkout-session",
     payload
   );
 

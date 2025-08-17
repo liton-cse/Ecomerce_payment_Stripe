@@ -1,17 +1,14 @@
 import React, { useState } from "react";
-import type {
-  SpecialProductCardProps,
-  SubscribePayload,
-} from "../../type/SepcialProduct/spacialProduct.type.js";
+import type { SpecialProductCardProps } from "../../type/SepcialProduct/spacialProduct.type.js";
 import ProductModal from "./SpecialProductModal.js";
 import { subscribe } from "../../redux/feature/Special_Product/subscriptionSlice.js";
 import { useAppDispatch, useAppSelector } from "../../redux/app/store.js";
+import { getFcmToken } from "../../redux/feature/fcmToken/fcmTokenSlice.js";
 const SpecialProductCard: React.FC<SpecialProductCardProps> = ({ product }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useAppDispatch();
   const [localLoading, setLocalLoading] = useState(false);
   const { loading } = useAppSelector((state) => state.subscribe);
-
   const formatPrice = (price: number) => {
     return new Intl.NumberFormat("en-US", {
       style: "currency",
@@ -32,13 +29,16 @@ const SpecialProductCard: React.FC<SpecialProductCardProps> = ({ product }) => {
 
   const handleSubscribe = async (e: React.MouseEvent) => {
     e.stopPropagation();
-    const payload: SubscribePayload = {
-      priceId: product.stripe_price_id ?? "",
-      productName: product.name ?? "",
-      billingCycle: product.billing_cycle ?? "",
-    };
+    const token = await dispatch(getFcmToken()).unwrap();
+
+      products: {
+        priceId: product.stripe_price_id ?? "",
+        productName: product.name ?? "",
+        billingCycle: product.billing_cycle ?? "",
+      }
+
     try {
-      await dispatch(subscribe(payload)).unwrap();
+      await dispatch(subscribe({ products, token })).unwrap();
     } finally {
       setLocalLoading(false);
     }

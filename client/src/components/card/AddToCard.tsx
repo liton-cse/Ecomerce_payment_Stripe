@@ -61,15 +61,6 @@ const AddToCard: React.FC = () => {
     countquantity();
   }, [total, countquantity]);
 
-  // useEffect(() => {
-  //   const fetchToken = async () => {
-  //     const token = await dispatch(getFcmToken()).unwrap(); // unwrap gives the actual payload
-  //     console.log("FCM Token:", token);
-  //   };
-
-  //   fetchToken();
-  // }, [dispatch]);
-
   const makePayment = async () => {
     const stripe = await loadStripe(import.meta.env.VITE_STRIPE_PUBLISH_KEY);
     if (!stripe) {
