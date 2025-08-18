@@ -4,19 +4,19 @@ interface AsideProps {
   rightContent?: React.ReactNode;
 }
 
-function Aside({ children }: AsideProps) {
+function Aside({ children, leftContent }: AsideProps) {
   return (
-    <div className="flex flex-col lg:flex-row p-2 mt-14 sm:p-6 gap-2 sm:gap-4 ">
-      <aside className="hidden md:block lg:w-48 xl:w-56 2xl:w-64 bg-gray-100 p-2 sm:p-3 lg:p-4 rounded shadow">
-        Left Aside
-      </aside>
+    <div className="flex flex-col lg:flex-row p-1 mt-20  gap-2 sm:gap-4">
+      {/* <aside className="hidden md:block lg:w-64 xl:w-80 2xl:w-96 bg-gray-50  rounded shadow">
+        {leftContent}
+      </aside> */}
 
       <section className="flex- sm:p-3 lg:p-4 bg-white rounded shadow min-w-0">
         {children}
       </section>
 
-      <aside className="hidden xl:block xl:w-56 2xl:w-64 bg-gray-100 p-2 sm:p-3 lg:p-4 rounded shadow">
-        Right Aside
+      <aside className="hidden xl:block xl:w-80 2xl:w-1/4 bg-gray-50 p-2  rounded shadow">
+        {leftContent}
       </aside>
     </div>
   );

@@ -17,9 +17,9 @@ export const subscribe = createAsyncThunk<
   { rejectValue: string }
 >(
   "subscription/subscribe",
-  async (payload: SubscribePayload, { rejectWithValue }) => {
+  async ({ products, token }: SubscribePayload, { rejectWithValue }) => {
     try {
-      await subscribeApiResponse(payload);
+      await subscribeApiResponse({ products, token });
       return; // <--- Add this explicit return here
     } catch (error: any) {
       // Ensure error.message exists and is string

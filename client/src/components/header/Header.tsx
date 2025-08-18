@@ -23,7 +23,7 @@ const Header = () => {
 
   return (
     <header className="w-full bg-gray-50 text-gray-900 shadow-md fixed top-0 z-50">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-6 md:px-8">
+      <div className="max-w-7xl mx-auto flex items-center justify-between px-4 py-4 md:px-8">
         {/* Logo */}
         <h1 className="text-xl font-bold md:text-2xl tracking-tight">
           <Link
@@ -108,56 +108,62 @@ const Header = () => {
 
       {/* Mobile Navigation */}
       {/* Mobile Navigation */}
+      {/* Mobile Navigation */}
       <div
-        className={`md:hidden bg-gray-50 shadow-md px-4 overflow-hidden transition-all duration-500 ease-in-out ${
-          menuOpen ? "max-h-96 py-4" : "max-h-0 py-0"
-        }`}
+        className={`md:hidden bg-gray-50 shadow-md px-4 overflow-hidden 
+  transition-[max-height] duration-500 ease-in-out 
+  ${menuOpen ? "max-h-96 py-4" : "max-h-0 py-0"}`}
       >
-        {!token ? (
-          <>
-            <Link
-              to="/"
-              className="block hover:text-indigo-600 transition duration-300 text-black font-medium"
-              onClick={() => setMenuOpen(false)}
-            >
-              Login
-            </Link>
-            <Link
-              to="/register"
-              className="block hover:text-indigo-600 transition duration-300 text-black font-medium"
-              onClick={() => setMenuOpen(false)}
-            >
-              Register
-            </Link>
-          </>
-        ) : (
-          <>
-            <Link
-              to="/"
-              className="block hover:text-indigo-600 transition duration-300 text-black font-medium"
-              onClick={() => setMenuOpen(false)}
-            >
-              Home
-            </Link>
-            <Link
-              to="/special-products"
-              className="block hover:text-indigo-600 transition duration-300 text-black font-medium"
-              onClick={() => setMenuOpen(false)}
-            >
-              Special Products
-            </Link>
-            <Link
-              to="#"
-              className="block hover:text-indigo-600 transition duration-300 text-black font-medium"
-              onClick={() => {
-                setMenuOpen(false);
-                handleLogout();
-              }}
-            >
-              Logout
-            </Link>
-          </>
-        )}
+        <div
+          className={`flex flex-col gap-3 transform transition-all duration-500 
+    ${menuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}
+        >
+          {!token ? (
+            <>
+              <Link
+                to="/"
+                className="block hover:text-indigo-600 transition duration-300 text-black font-medium"
+                onClick={() => setMenuOpen(false)}
+              >
+                Login
+              </Link>
+              <Link
+                to="/register"
+                className="block hover:text-indigo-600 transition duration-300 text-black font-medium"
+                onClick={() => setMenuOpen(false)}
+              >
+                Register
+              </Link>
+            </>
+          ) : (
+            <>
+              <Link
+                to="/"
+                className="block hover:text-indigo-600 transition duration-300 text-black font-medium"
+                onClick={() => setMenuOpen(false)}
+              >
+                Home
+              </Link>
+              <Link
+                to="/special-products"
+                className="block hover:text-indigo-600 transition duration-300 text-black font-medium"
+                onClick={() => setMenuOpen(false)}
+              >
+                Special Products
+              </Link>
+              <Link
+                to="#"
+                className="block hover:text-indigo-600 transition duration-300 text-black font-medium"
+                onClick={() => {
+                  setMenuOpen(false);
+                  handleLogout();
+                }}
+              >
+                Logout
+              </Link>
+            </>
+          )}
+        </div>
       </div>
     </header>
   );

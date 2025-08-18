@@ -28,17 +28,20 @@ export interface ProductModalProps {
 
   isSubscribing: boolean;
 }
-
-export interface SubscribePayload {
-  products: {
-    priceId: string;
-    productName: string;
-    billingCycle: string;
-  };
-  token: string;
-}
-
 export interface SubscriptionState {
   loading: boolean;
   error: string | null;
+}
+export interface SubscribeProduct {
+  priceId: string;
+  productName: string;
+  billingCycle: string;
+  image_url?: string;
+  sub_price: number;
+  subscription: boolean;
+}
+
+export interface SubscribePayload {
+  products: SubscribeProduct[];
+  token: string;
 }

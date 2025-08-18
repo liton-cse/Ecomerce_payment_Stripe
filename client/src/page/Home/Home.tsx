@@ -1,9 +1,10 @@
 import CardDetails from "../../components/card/CardDetails.js";
 import Aside from "../../layouts/AsideLayout.js";
+import LeftAside from "../../components/aside/LeftAside.js";
 function Home() {
   return (
-    <div className="mt-4">
-      <Aside>
+    <div>
+      <Aside leftContent={<LeftAside />}>
         <CardDetails />
       </Aside>
     </div>

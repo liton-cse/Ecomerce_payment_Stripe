@@ -9,6 +9,7 @@ export interface CardProduct {
   rating: string;
   arrimg: string;
   qnty: number;
+  subscription?: boolean;
 }
 
 export interface SpecialProduct {
@@ -21,7 +22,16 @@ export interface SpecialProduct {
   stripe_price_id: string;
 }
 
+export interface Products {
+  priceId: string;
+  productName: string;
+  billingCycle: string;
+  image_url: string;
+  sub_price: number;
+  subscription?: boolean;
+}
+
 export interface CheckoutRequestBody {
-  products: (CardProduct | SpecialProduct)[];
+  products: (CardProduct | Products)[];
   token: string;
 }

@@ -1,39 +1,44 @@
 import cors from 'cors';
 import express, { Request, Response } from 'express';
-import { StatusCodes } from 'http-status-codes';
-import globalErrorHandler from './app/middlewares/globalErrorHandler';
-import router from './routes';
-import { Morgan } from './shared/morgen';
 import bodyParser from 'body-parser';
 import { handleStripeWebhook } from './app/modules/products/product.controller';
+import router from './routes';
+import { StatusCodes } from 'http-status-codes';
+import globalErrorHandler from './app/middlewares/globalErrorHandler';
+import { Morgan } from './shared/morgen';
+
 const app = express();
 
-//morgan
+// --- CORS first ---
+app.use(cors());
+
+// --- Morgan ---
 app.use(Morgan.successHandler);
 app.use(Morgan.errorHandler);
+
+// --- Stripe Webhook (RAW BODY) ---
 app.post(
   '/api/v1/products/webhook',
   bodyParser.raw({ type: 'application/json' }),
   handleStripeWebhook
 );
 app.post(
-  '/api/v1/spacial/products/webhook',
+  '/api/v1/products/webhook',
   bodyParser.raw({ type: 'application/json' }),
   handleStripeWebhook
 );
 
-//body parser
-app.use(cors());
+// --- JSON & URL-encoded body parser for other routes ---
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-//file retrieve
+// --- Static files ---
 app.use(express.static('uploads'));
 
-//router
+// --- Router ---
 app.use('/api/v1', router);
 
-//live response
+// --- Live response ---
 app.get('/', (req: Request, res: Response) => {
   const date = new Date(Date.now());
   res.send(
@@ -43,10 +48,10 @@ app.get('/', (req: Request, res: Response) => {
   );
 });
 
-//global error handle
+// --- Global error handler ---
 app.use(globalErrorHandler);
 
-//handle not found route;
+// --- 404 handler ---
 app.use((req, res) => {
   res.status(StatusCodes.NOT_FOUND).json({
     success: false,

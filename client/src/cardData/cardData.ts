@@ -23,7 +23,7 @@ const Cardsdata = [
     delimg:
       "https://b.zmtcdn.com/data/o2_assets/0b07ef18234c6fdf9365ad1c274ae0631612687510.png?output-format=webp",
     somedata: " 2525 + order placed from here recently",
-    price: 25,
+    price: 250,
     rating: "3.9",
     arrimg:
       "https://b.zmtcdn.com/data/o2_assets/4bf016f32f05d26242cea342f30d47a31595763089.png?output-format=webp",
@@ -38,7 +38,7 @@ const Cardsdata = [
     delimg:
       "https://b.zmtcdn.com/data/o2_assets/0b07ef18234c6fdf9365ad1c274ae0631612687510.png?output-format=webp",
     somedata: " 650 + order placed from here recently",
-    price: 70,
+    price: 700,
     rating: "4.2",
     arrimg:
       "https://b.zmtcdn.com/data/o2_assets/4bf016f32f05d26242cea342f30d47a31595763089.png?output-format=webp",
@@ -53,7 +53,7 @@ const Cardsdata = [
     delimg:
       "https://b.zmtcdn.com/data/o2_assets/0b07ef18234c6fdf9365ad1c274ae0631612687510.png?output-format=webp",
     somedata: " 300 + order placed from here recently",
-    price: 70,
+    price: 280,
     rating: "3.8",
     arrimg:
       "https://b.zmtcdn.com/data/o2_assets/4bf016f32f05d26242cea342f30d47a31595763089.png?output-format=webp",

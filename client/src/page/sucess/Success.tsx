@@ -27,7 +27,7 @@ function Success() {
         {/* Order summary */}
         <div className="mt-6 border-t border-b py-4">
           <p className="text-xs sm:text-sm text-gray-500">
-            {success && sessionId ? "Session ID: " : "Order Number: "}
+            {success && sessionId ? "Subscribe Number: " : "Order Number: "}
           </p>
           <p className="text-lg sm:text-xl font-semibold text-gray-800 break-words">
             {orderId}

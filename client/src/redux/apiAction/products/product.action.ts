@@ -4,9 +4,10 @@ import type { SubscribePayload } from "../../../type/SepcialProduct/spacialProdu
 
 // Put your Stripe public key here (or import from config)
 const stripePublicKey = import.meta.env.VITE_STRIPE_PUBLISH_KEY as string;
-export const subscribeApiResponse = async (
-  payload: SubscribePayload
-): Promise<void> => {
+export const subscribeApiResponse = async ({
+  products,
+  token,
+}: SubscribePayload): Promise<void> => {
   // Load Stripe
   const stripe = await loadStripe(stripePublicKey);
 
@@ -15,7 +16,7 @@ export const subscribeApiResponse = async (
   }
   const response = await axiosInstance.post(
     "/products/create-checkout-session",
-    payload
+    { products, token }
   );
 
   if (!response.data) {

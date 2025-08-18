@@ -4,6 +4,7 @@ import ProductModal from "./SpecialProductModal.js";
 import { subscribe } from "../../redux/feature/Special_Product/subscriptionSlice.js";
 import { useAppDispatch, useAppSelector } from "../../redux/app/store.js";
 import { getFcmToken } from "../../redux/feature/fcmToken/fcmTokenSlice.js";
+import type { SubscribeProduct } from "../../type/SepcialProduct/spacialProduct.type.js";
 const SpecialProductCard: React.FC<SpecialProductCardProps> = ({ product }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const dispatch = useAppDispatch();
@@ -31,11 +32,16 @@ const SpecialProductCard: React.FC<SpecialProductCardProps> = ({ product }) => {
     e.stopPropagation();
     const token = await dispatch(getFcmToken()).unwrap();
 
-      products: {
+    const products: SubscribeProduct[] = [
+      {
         priceId: product.stripe_price_id ?? "",
         productName: product.name ?? "",
         billingCycle: product.billing_cycle ?? "",
-      }
+        image_url: product.image_url ?? "",
+        sub_price: product.price ?? "",
+        subscription: true,
+      },
+    ];
 
     try {
       await dispatch(subscribe({ products, token })).unwrap();

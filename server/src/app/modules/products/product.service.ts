@@ -1,5 +1,6 @@
 import admin from 'firebase-admin';
 import dotenv from 'dotenv';
+import { logger } from '../../../shared/logger';
 dotenv.config();
 admin.initializeApp({
   credential: admin.credential.cert({
@@ -25,6 +26,7 @@ export const sendPushNotification = async ({
       notification: { title, body },
       token: recipientToken,
     };
+    logger.info(message);
     const response = await admin.messaging().send(message);
     console.log('Push notification sent:', response);
   } catch (err) {

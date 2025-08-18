@@ -1,5 +1,6 @@
 import React from "react";
 import Header from "../components/header/Header.js";
+import Footer from "../components/footer/footer.js";
 
 type MainLayoutProps = {
   children: React.ReactNode;
@@ -14,7 +15,9 @@ const MainLayout: React.FC<MainLayoutProps> = ({
         <Header />
       </header>
       <main>{children}</main>
-      <footer>Footer</footer>
+      <footer>
+        <Footer />
+      </footer>
     </div>
   );
 };
