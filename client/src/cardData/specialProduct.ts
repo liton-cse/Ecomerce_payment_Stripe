@@ -29,7 +29,8 @@ const specialProduct = [
   {
     id: 4,
     name: "Amazon Prime",
-    description: "Free shipping, video streaming, and exclusive deals",
+    description:
+      "Free shipping, video streaming, and exclusive deals If you want, I can give you the perfect Tailwind class combination that keeps a nice width-to-height ratio on all devices without overflowing the screen.",
     price: 163,
     billing_cycle: "monthly",
     image_url: "https://cdn-icons-png.flaticon.com/512/731/731985.png",

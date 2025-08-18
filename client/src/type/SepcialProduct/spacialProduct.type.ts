@@ -19,6 +19,7 @@ export interface ProductModalProps {
     price: number;
     image_url: string;
     billing_cycle: string;
+    stripe_price_id?: string;
   };
   onClose: () => void;
   onSubscribe: (

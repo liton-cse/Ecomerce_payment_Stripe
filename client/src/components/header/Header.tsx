@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { ShoppingCart, Menu, X } from "lucide-react";
+import { Home, Star, LogIn, UserPlus, LogOut } from "lucide-react";
 import { useState } from "react";
 import { logout } from "../../redux/feature/auth/loginSlice.js"; // path to your slice
 import type { AppDispatch, RootState } from "../../redux/app/store.js";
@@ -108,58 +109,59 @@ const Header = () => {
 
       {/* Mobile Navigation */}
       {/* Mobile Navigation */}
-      {/* Mobile Navigation */}
       <div
         className={`md:hidden bg-gray-50 shadow-md px-4 overflow-hidden 
-  transition-[max-height] duration-500 ease-in-out 
-  ${menuOpen ? "max-h-96 py-4" : "max-h-0 py-0"}`}
+transition-[max-height] duration-500 ease-in-out 
+${menuOpen ? "max-h-96 py-4" : "max-h-0 py-0"}`}
       >
         <div
           className={`flex flex-col gap-3 transform transition-all duration-500 
-    ${menuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}
+${menuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}
         >
           {!token ? (
             <>
               <Link
                 to="/"
-                className="block hover:text-indigo-600 transition duration-300 text-black font-medium"
+                className="flex items-center gap-2 hover:text-indigo-600 transition duration-300 text-black font-medium"
                 onClick={() => setMenuOpen(false)}
               >
-                Login
+                <LogIn className="w-5 h-5" /> Login
               </Link>
               <Link
                 to="/register"
-                className="block hover:text-indigo-600 transition duration-300 text-black font-medium"
+                className="flex items-center gap-2 hover:text-indigo-600 transition duration-300 text-black font-medium"
                 onClick={() => setMenuOpen(false)}
               >
-                Register
+                <UserPlus className="w-5 h-5" /> Register
               </Link>
             </>
           ) : (
             <>
               <Link
                 to="/"
-                className="block hover:text-indigo-600 transition duration-300 text-black font-medium"
+                className="flex items-center gap-2 hover:text-indigo-600 transition duration-300 text-black font-medium"
                 onClick={() => setMenuOpen(false)}
               >
+                <Home className="w-5 h-5 text-indigo-600" />
                 Home
               </Link>
               <Link
                 to="/special-products"
-                className="block hover:text-indigo-600 transition duration-300 text-black font-medium"
+                className="flex items-center gap-2 hover:text-indigo-600 transition duration-300 text-black font-medium"
                 onClick={() => setMenuOpen(false)}
               >
-                Special Products
+                <Star className="w-5 h-5 text-indigo-600" /> Special Products
               </Link>
+              <hr className="border-t border-indigo-200" />
               <Link
                 to="#"
-                className="block hover:text-indigo-600 transition duration-300 text-black font-medium"
+                className="flex items-center gap-2 hover:text-indigo-600 transition duration-300 text-black font-medium"
                 onClick={() => {
                   setMenuOpen(false);
                   handleLogout();
                 }}
               >
-                Logout
+                <LogOut className="w-5 h-5 text-red-600" /> Logout
               </Link>
             </>
           )}
