@@ -50,9 +50,9 @@ function ProductManager() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 px-4 sm:px-6 lg:px-8">
       {/* Management Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
         <Button
           className="h-16 flex-col gap-2 bg-transparent"
           variant="outline"
@@ -79,7 +79,7 @@ function ProductManager() {
       {/* Product Card */}
       <Card className="overflow-hidden hover:shadow-xl transition-all duration-300">
         <CardHeader className="bg-gradient-to-r from-red-500 to-red-600 text-white">
-          <div className="flex items-center justify-between">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <CardTitle className="flex items-center gap-3">
               <img
                 src={product.image_url || "/placeholder.svg"}
@@ -91,7 +91,7 @@ function ProductManager() {
                 <p className="text-red-100 text-sm">{product.description}</p>
               </div>
             </CardTitle>
-            <div className="flex gap-2">
+            <div className="flex flex-wrap gap-2">
               {!isEditing ? (
                 <Button onClick={handleEdit} variant="secondary" size="sm">
                   <Edit className="w-4 h-4 mr-2" />
@@ -114,7 +114,8 @@ function ProductManager() {
         </CardHeader>
         <CardContent className="p-6">
           {!isEditing ? (
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Left Column */}
               <div className="space-y-4">
                 <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg">
                   <h4 className="font-semibold mb-2">Pricing Details</h4>
@@ -138,6 +139,7 @@ function ProductManager() {
                 </div>
               </div>
 
+              {/* Right Column */}
               <div className="space-y-4">
                 <div className="bg-gradient-to-br from-purple-50 to-pink-50 dark:from-purple-900/20 dark:to-pink-900/20 p-4 rounded-lg">
                   <h4 className="font-semibold mb-2">Features</h4>
@@ -167,7 +169,7 @@ function ProductManager() {
               </div>
             </div>
           ) : (
-            <div className="grid md:grid-cols-2 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               <div className="space-y-4">
                 <div>
                   <Label htmlFor="name">Product Name</Label>
@@ -256,4 +258,5 @@ function ProductManager() {
     </div>
   );
 }
+
 export default ProductManager;

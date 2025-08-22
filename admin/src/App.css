@@ -1,11 +1,11 @@
-@layer base {
+/* @layer base {
   * {
     @apply border-border;
   }
   body {
     @apply bg-background text-foreground;
   }
-}
+} */
 
 .animate-in {
   animation: fadeIn 0.5s ease-in-out;

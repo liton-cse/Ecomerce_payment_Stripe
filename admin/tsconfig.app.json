@@ -1,4 +1,5 @@
 {
+  "extends": "./tsconfig.json",
   "compilerOptions": {
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
     "target": "ES2022",
@@ -9,6 +10,10 @@
     "composite": true,
     "outDir": "./dist/app", // required for composite projects
     "rootDir": "./src",
+    "baseUrl": "./src",
+    "paths": {
+      "@/*": ["*"]
+    },
 
     /* Bundler mode */
     "moduleResolution": "node",

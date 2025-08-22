@@ -120,6 +120,7 @@ ${menuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}
         >
           {!token ? (
             <>
+              <hr className="border-t border-indigo-200" />
               <Link
                 to="/"
                 className="flex items-center gap-2 hover:text-indigo-600 transition duration-300 text-black font-medium"
@@ -139,7 +140,7 @@ ${menuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}
             <>
               <Link
                 to="/"
-                className="flex items-center gap-2 hover:text-indigo-600 transition duration-300 text-black font-medium"
+                className="flex items-center gap-2 hover:text-indigo-600 transition duration-300 text-black font-semibold"
                 onClick={() => setMenuOpen(false)}
               >
                 <Home className="w-5 h-5 text-indigo-600" />
@@ -147,7 +148,7 @@ ${menuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}
               </Link>
               <Link
                 to="/special-products"
-                className="flex items-center gap-2 hover:text-indigo-600 transition duration-300 text-black font-medium"
+                className="flex items-center gap-2 hover:text-indigo-600 transition duration-300 text-black font-semibold"
                 onClick={() => setMenuOpen(false)}
               >
                 <Star className="w-5 h-5 text-indigo-600" /> Special Products
@@ -155,7 +156,7 @@ ${menuOpen ? "opacity-100 translate-y-0" : "opacity-0 -translate-y-4"}`}
               <hr className="border-t border-indigo-200" />
               <Link
                 to="#"
-                className="flex items-center gap-2 hover:text-indigo-600 transition duration-300 text-black font-medium"
+                className="flex items-center gap-2 hover:text-indigo-600 transition duration-300 text-black font-semibold"
                 onClick={() => {
                   setMenuOpen(false);
                   handleLogout();

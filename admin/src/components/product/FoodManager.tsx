@@ -67,10 +67,10 @@ function FoodManager() {
   };
 
   return (
-    <Card className="overflow-hidden hover:shadow-xl transition-all duration-300">
-      <CardHeader className="pb-4">
-        <div className="flex items-center justify-between">
-          <CardTitle className="flex items-center gap-2">
+    <Card className="overflow-hidden hover:shadow-xl transition-all duration-300 max-w-full mx-auto">
+      <CardHeader className="pb-4 px-4 sm:px-6">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 sm:gap-0">
+          <CardTitle className="flex items-center gap-2 flex-wrap sm:flex-nowrap">
             <span className="text-xl font-bold capitalize">
               {isEditing ? "Edit Food Item" : foodData.dish}
             </span>
@@ -81,7 +81,7 @@ function FoodManager() {
               </Badge>
             )}
           </CardTitle>
-          <div className="flex gap-2">
+          <div className="flex flex-wrap gap-2">
             {!isEditing ? (
               <Button onClick={handleEdit} variant="outline" size="sm">
                 <Edit className="w-4 h-4 mr-2" />
@@ -102,38 +102,84 @@ function FoodManager() {
           </div>
         </div>
       </CardHeader>
-      <CardContent className="space-y-4">
-        {!isEditing ? (
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <img
-                src={foodData.imgdata || "/placeholder.svg"}
-                alt={foodData.dish}
-                className="w-full h-48 object-cover rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
-              />
-              <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
-                <MapPin className="w-4 h-4" />
-                <span>{foodData.address}</span>
-              </div>
-            </div>
 
-            <div className="space-y-4">
-              <div className="flex items-center gap-3">
+      <CardContent className="space-y-4 px-4 sm:px-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          {/* Left Section */}
+          <div className="space-y-4">
+            {!isEditing ? (
+              <>
                 <img
-                  src={foodData.delimg || "/placeholder.svg"}
-                  alt="Delivery"
-                  className="w-8 h-8"
+                  src={foodData.imgdata || "/placeholder.svg"}
+                  alt={foodData.dish}
+                  className="w-full h-48 md:h-56 object-cover rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300"
                 />
-                <div className="flex-1">
-                  <p className="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-1">
-                    <Clock className="w-3 h-3" />
-                    {foodData.somedata}
-                  </p>
+                <div className="flex items-center gap-2 text-sm text-slate-600 dark:text-slate-400">
+                  <MapPin className="w-4 h-4" />
+                  <span>{foodData.address}</span>
                 </div>
-              </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <Label htmlFor="dish">Dish Name</Label>
+                  <Input
+                    id="dish"
+                    value={editData.dish}
+                    onChange={(e) =>
+                      setEditData((prev) => ({ ...prev, dish: e.target.value }))
+                    }
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="imgdata">Image URL</Label>
+                  <Input
+                    id="imgdata"
+                    value={editData.imgdata}
+                    onChange={(e) =>
+                      setEditData((prev) => ({
+                        ...prev,
+                        imgdata: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="address">Address/Category</Label>
+                  <Input
+                    id="address"
+                    value={editData.address}
+                    onChange={(e) =>
+                      setEditData((prev) => ({
+                        ...prev,
+                        address: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+              </>
+            )}
+          </div>
 
-              <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg">
-                <div className="flex items-center justify-between mb-3">
+          {/* Right Section */}
+          <div className="space-y-4">
+            {!isEditing ? (
+              <>
+                <div className="flex items-center gap-3">
+                  <img
+                    src={foodData.delimg || "/placeholder.svg"}
+                    alt="Delivery"
+                    className="w-8 h-8"
+                  />
+                  <div className="flex-1">
+                    <p className="text-sm text-slate-600 dark:text-slate-400 flex items-center gap-1">
+                      <Clock className="w-3 h-3" />
+                      {foodData.somedata}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="bg-slate-50 dark:bg-slate-800 p-4 rounded-lg flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 sm:gap-0">
                   <span className="text-2xl font-bold text-green-600">
                     ₹{foodData.price}
                   </span>
@@ -142,117 +188,80 @@ function FoodManager() {
                     alt="Arrow"
                     className="w-6 h-6"
                   />
-                </div>
 
-                <div className="flex items-center gap-3">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleQuantityChange("decrease")}
-                    disabled={foodData.qnty === 0}
-                    className="w-8 h-8 p-0"
-                  >
-                    <Minus className="w-4 h-4" />
-                  </Button>
-                  <span className="font-semibold text-lg min-w-[2rem] text-center">
-                    {foodData.qnty}
-                  </span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleQuantityChange("increase")}
-                    className="w-8 h-8 p-0"
-                  >
-                    <Plus className="w-4 h-4" />
-                  </Button>
+                  <div className="flex items-center gap-3 ml-auto sm:ml-0">
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleQuantityChange("decrease")}
+                      disabled={foodData.qnty === 0}
+                      className="w-8 h-8 p-0"
+                    >
+                      <Minus className="w-4 h-4" />
+                    </Button>
+                    <span className="font-semibold text-lg min-w-[2rem] text-center">
+                      {foodData.qnty}
+                    </span>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => handleQuantityChange("increase")}
+                      className="w-8 h-8 p-0"
+                    >
+                      <Plus className="w-4 h-4" />
+                    </Button>
+                  </div>
                 </div>
-              </div>
-            </div>
+              </>
+            ) : (
+              <>
+                <div>
+                  <Label htmlFor="price">Price (₹)</Label>
+                  <Input
+                    id="price"
+                    type="number"
+                    value={editData.price}
+                    onChange={(e) =>
+                      setEditData((prev) => ({
+                        ...prev,
+                        price: Number(e.target.value),
+                      }))
+                    }
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="rating">Rating</Label>
+                  <Input
+                    id="rating"
+                    value={editData.rating}
+                    onChange={(e) =>
+                      setEditData((prev) => ({
+                        ...prev,
+                        rating: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="somedata">Order Information</Label>
+                  <Textarea
+                    id="somedata"
+                    value={editData.somedata}
+                    onChange={(e) =>
+                      setEditData((prev) => ({
+                        ...prev,
+                        somedata: e.target.value,
+                      }))
+                    }
+                  />
+                </div>
+              </>
+            )}
           </div>
-        ) : (
-          <div className="grid md:grid-cols-2 gap-6">
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="dish">Dish Name</Label>
-                <Input
-                  id="dish"
-                  value={editData.dish}
-                  onChange={(e) =>
-                    setEditData((prev) => ({ ...prev, dish: e.target.value }))
-                  }
-                />
-              </div>
-              <div>
-                <Label htmlFor="imgdata">Image URL</Label>
-                <Input
-                  id="imgdata"
-                  value={editData.imgdata}
-                  onChange={(e) =>
-                    setEditData((prev) => ({
-                      ...prev,
-                      imgdata: e.target.value,
-                    }))
-                  }
-                />
-              </div>
-              <div>
-                <Label htmlFor="address">Address/Category</Label>
-                <Input
-                  id="address"
-                  value={editData.address}
-                  onChange={(e) =>
-                    setEditData((prev) => ({
-                      ...prev,
-                      address: e.target.value,
-                    }))
-                  }
-                />
-              </div>
-            </div>
-
-            <div className="space-y-4">
-              <div>
-                <Label htmlFor="price">Price (₹)</Label>
-                <Input
-                  id="price"
-                  type="number"
-                  value={editData.price}
-                  onChange={(e) =>
-                    setEditData((prev) => ({
-                      ...prev,
-                      price: Number(e.target.value),
-                    }))
-                  }
-                />
-              </div>
-              <div>
-                <Label htmlFor="rating">Rating</Label>
-                <Input
-                  id="rating"
-                  value={editData.rating}
-                  onChange={(e) =>
-                    setEditData((prev) => ({ ...prev, rating: e.target.value }))
-                  }
-                />
-              </div>
-              <div>
-                <Label htmlFor="somedata">Order Information</Label>
-                <Textarea
-                  id="somedata"
-                  value={editData.somedata}
-                  onChange={(e) =>
-                    setEditData((prev) => ({
-                      ...prev,
-                      somedata: e.target.value,
-                    }))
-                  }
-                />
-              </div>
-            </div>
-          </div>
-        )}
+        </div>
       </CardContent>
     </Card>
   );
 }
+
 export default FoodManager;
