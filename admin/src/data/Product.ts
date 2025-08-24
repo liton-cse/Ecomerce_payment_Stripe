@@ -24,3 +24,52 @@ export const userFields: {
   { key: "verified", placeholder: "Verified", type: "checkbox" },
   { key: "image", placeholder: "Image URL", type: "file" },
 ];
+
+export const SubscriptionProduct: {
+  type: "text" | "textarea" | "number" | "select" | "file";
+  name: string;
+  label: string;
+  placeholder?: string;
+  options?: { label: string; value: string }[]; // for select
+  required?: boolean;
+}[] = [
+  {
+    name: "name",
+    label: "Product Name",
+    type: "text",
+    placeholder: "Enter name",
+    required: true,
+  },
+  {
+    name: "description",
+    label: "Description",
+    type: "textarea",
+    placeholder: "Brief description",
+    required: true,
+  },
+  {
+    name: "price",
+    label: "Price ($)",
+    type: "number",
+    placeholder: "Enter price",
+    required: true,
+  },
+  {
+    name: "billing_cycle",
+    label: "Billing Cycle",
+    type: "select",
+    options: [
+      { label: "Monthly", value: "monthly" },
+      { label: "Yearly", value: "yearly" },
+    ],
+    required: true,
+  },
+  { name: "image", label: "Product Image", type: "file", required: true },
+  {
+    name: "stripe_price_id",
+    label: "Stripe Price ID",
+    type: "text",
+    placeholder: "Stripe price ID",
+    required: true,
+  },
+];

@@ -1,15 +1,14 @@
-export interface CardProduct {
-  id: number;
+export interface IProduct extends Document {
   dish: string;
   imgdata: string;
-  address: string;
-  delimg: string;
-  somedata: string;
+  address?: string;
+  delimg?: string;
+  somedata?: string;
   price: number;
-  rating: string;
-  arrimg: string;
-  qnty: number;
-  subscription?: boolean;
+  rating?: string;
+  arrimg?: string;
+  qnty?: number;
+  subscription?: string;
 }
 
 export interface SpecialProduct {
@@ -22,7 +21,7 @@ export interface SpecialProduct {
   stripe_price_id: string;
 }
 
-export interface Products {
+export interface ISubscriptionProducts {
   priceId: string;
   productName: string;
   billingCycle: string;
@@ -32,6 +31,6 @@ export interface Products {
 }
 
 export interface CheckoutRequestBody {
-  products: (CardProduct | Products)[];
+  products: (IProduct | ISubscriptionProducts)[];
   token: string;
 }

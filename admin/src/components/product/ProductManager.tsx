@@ -7,7 +7,9 @@ import { Badge } from "../ui/badge";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
-import { Edit, Save, X, Plus, Settings, Trash2 } from "lucide-react";
+import { Edit, Save, X, Plus, Delete } from "lucide-react";
+import AddProduct from "./component/SubscriptionForm";
+import { motion, AnimatePresence } from "framer-motion";
 
 interface SpecialProduct {
   id: number;
@@ -33,6 +35,7 @@ function ProductManager() {
   const [product, setProduct] = useState<SpecialProduct>(initialProduct);
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState<SpecialProduct>(initialProduct);
+  const [showForm, setShowForm] = useState(false);
 
   const handleEdit = () => {
     setEditData(product);
@@ -52,30 +55,34 @@ function ProductManager() {
   return (
     <div className="space-y-6 px-4 sm:px-6 lg:px-8">
       {/* Management Actions */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-        <Button
-          className="h-16 flex-col gap-2 bg-transparent"
-          variant="outline"
-        >
-          <Plus className="w-5 h-5" />
-          Add New Product
-        </Button>
-        <Button
-          className="h-16 flex-col gap-2 bg-transparent"
-          variant="outline"
-        >
-          <Settings className="w-5 h-5" />
-          Manage Subscriptions
-        </Button>
-        <Button
-          className="h-16 flex-col gap-2 bg-transparent"
-          variant="outline"
-        >
-          <Trash2 className="w-5 h-5" />
-          Remove Products
-        </Button>
-      </div>
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+        {/* Column 1: Add New Product */}
+        <div className="flex flex-col gap-4">
+          <Button
+            className="h-16 flex-col gap-2 bg-transparent"
+            variant="outline"
+            onClick={() => setShowForm((prev) => !prev)} // toggle open/close
+          >
+            <Plus className="w-5 h-5" />
+            Add New Product
+          </Button>
 
+          {/* Smooth animated toggle */}
+          <AnimatePresence>
+            {showForm && (
+              <motion.div
+                initial={{ opacity: 0, height: 0, scale: 0.95 }}
+                animate={{ opacity: 1, height: "auto", scale: 1 }}
+                exit={{ opacity: 0, height: 0, scale: 0.95 }}
+                transition={{ duration: 0.3, ease: "easeInOut" }}
+                className="overflow-hidden"
+              >
+                <AddProduct setShowForm={setShowForm} />
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </div>
+      </div>
       {/* Product Card */}
       <Card className="overflow-hidden hover:shadow-xl transition-all duration-300">
         <CardHeader className="bg-gradient-to-r from-red-500 to-red-600 text-white">
@@ -93,10 +100,16 @@ function ProductManager() {
             </CardTitle>
             <div className="flex flex-wrap gap-2">
               {!isEditing ? (
-                <Button onClick={handleEdit} variant="secondary" size="sm">
-                  <Edit className="w-4 h-4 mr-2" />
-                  Edit
-                </Button>
+                <div className="flex flex-row gap-4">
+                  <Button onClick={handleEdit} variant="secondary" size="sm">
+                    <Edit className="w-4 h-4 mr-2" />
+                    Edit
+                  </Button>
+                  <Button onClick={handleEdit} variant="secondary" size="sm">
+                    <Delete className="w-4 h-4 mr-2" />
+                    Delete
+                  </Button>
+                </div>
               ) : (
                 <>
                   <Button onClick={handleSave} variant="secondary" size="sm">

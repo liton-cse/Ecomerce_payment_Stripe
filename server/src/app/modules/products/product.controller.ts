@@ -3,13 +3,16 @@ dotenv.config();
 import Stripe from 'stripe';
 import { Request, Response } from 'express';
 import { logger } from '../../../shared/logger';
-import { CheckoutRequestBody } from '../../../types/product';
-import { Order } from './product.order.model';
+import { CheckoutRequestBody } from './product.interface';
+import { Order, ProductModel } from './product.order.model';
 import { getNextSequence } from './counter.model';
 import { sendPushNotification } from './product.service';
 import { getNextSequenceSpacialProduct } from '../special_product/specialProduct.counter.model';
 import { SubscribeOrder } from '../special_product/spacialProduct.order.model';
-import type { Products } from '../../../types/product';
+import type { ISubscriptionProducts } from './product.interface';
+import * as productService from './product.service';
+import catchAsync from '../../../shared/catchAsync';
+import { StatusCodes } from 'http-status-codes';
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY as string, {
   apiVersion: '2025-07-30.basil',
 });
@@ -75,7 +78,8 @@ export const createCheckoutSession = async (
       // Filter subscription products
       const subscriptionLineItems = products
         .filter(
-          (p): p is Products => 'subscription' in p && p.subscription === true
+          (p): p is ISubscriptionProducts =>
+            'subscription' in p && p.subscription === true
         )
         .map(p => ({
           price: p.priceId, // now TypeScript knows p is Products
@@ -198,3 +202,70 @@ export const handleStripeWebhook = async (req: Request, res: Response) => {
     res.status(400).send(`Webhook Error: ${err.message}`);
   }
 };
+
+//normalize the body content for extract the image
+export const normalizeBody = (body: any) => {
+  const cleaned: Record<string, any> = {};
+  for (const key in body) cleaned[key.trim()] = body[key];
+  return cleaned;
+};
+// extract the image...
+export const extractFiles = (files: any, fieldName: string): string[] => {
+  return (files?.[fieldName] || []).map((file: any) => file.path);
+};
+// @business logic of creating a post
+// @method: post
+//endpoint:api/v1/products
+export const createProduct = catchAsync(async (req: Request, res: Response) => {
+  const body = normalizeBody(req.body);
+
+  const images = extractFiles(req.files, 'image');
+
+  const newProduct = await productService.createProduct({
+    ...body,
+    images,
+  });
+
+  res.status(201).json({ success: true, data: newProduct });
+});
+// @business logic of to get all a post
+// @method: get
+//endpoint:api/v1/products
+export const getProducts = catchAsync(async (req: Request, res: Response) => {
+  const products = await productService.getAllProducts();
+  res.status(200).json({ success: true, data: products });
+});
+// @business logic of to get product by id a post
+// @method: get
+//endpoint:api/v1/products/:id
+export const getProduct = catchAsync(async (req: Request, res: Response) => {
+  const product = await productService.getProductById(req.params.id);
+  if (!product)
+    return res.status(404).json({ success: false, message: 'Not found' });
+  res.status(200).json({ success: true, data: product });
+});
+// @business logic of to get all a post
+// @method: put
+//endpoint:api/v1/products/:id
+export const updateProduct = catchAsync(async (req: Request, res: Response) => {
+  const body = normalizeBody(req.body);
+  const images = extractFiles(req.files, 'image');
+  const updated = await productService.updateProduct(req.params.id, {
+    ...body,
+    images,
+  });
+  if (!updated)
+    return res.status(404).json({ success: false, message: 'Not found' });
+
+  res.status(200).json({ success: true, data: updated });
+});
+
+// @business logic of to delete product by Id
+// @method: delete
+//endpoint:api/v1/products/:id
+export const deleteProduct = catchAsync(async (req: Request, res: Response) => {
+  const deleted = await productService.deleteProduct(req.params.id);
+  if (!deleted)
+    return res.status(404).json({ success: false, message: 'Not found' });
+  res.status(200).json({ success: true, message: 'Deleted successfully' });
+});

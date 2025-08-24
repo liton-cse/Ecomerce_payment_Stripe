@@ -1,136 +1,78 @@
+// controllers/subscriptionProduct.controller.ts
 import { Request, Response } from 'express';
-import { CreateCheckoutSessionBody } from './sepacialProduct.interface';
-import { errorLogger, logger } from '../../../shared/logger';
-import stripe from '../../../shared/stripe';
-import { getNextSequenceSpacialProduct } from './specialProduct.counter.model';
-import { sendPushNotification } from '../products/product.service';
-import { SubscribeOrder } from './spacialProduct.order.model';
-import Stripe from 'stripe';
+import catchAsync from '../../../shared/catchAsync';
+import * as subscriptionProductService from './specialProduct.service';
+import { normalizeBody, extractFiles } from '../products/product.controller';
 
-export const createCheckoutSession = async (
-  req: Request<object, object, CreateCheckoutSessionBody>,
-  res: Response
-) => {
-  try {
-    const { priceId, productName, billingCycle, token } = req.body;
-    logger.info(priceId, productName, billingCycle);
-    if (!priceId) {
-      return res.status(400).json({ error: 'Missing priceId' });
-    }
-    if (!token) {
-      return res.status(400).json({ error: 'Missing priceId' });
-    }
-
-    const generatedOrderId = await getNextSequenceSpacialProduct('orderId');
-    // ✅ Save order in DB
-    await SubscribeOrder.create({
-      orderId: generatedOrderId,
-      token,
-      status: 'pending',
+//@ business logic for creating a subscription.
+//@ method:post
+//@endpoint:api/v1/spacial/product
+export const createSubscriptionProduct = catchAsync(
+  async (req: Request, res: Response) => {
+    const body = normalizeBody(req.body);
+    const images = extractFiles(req.files, 'image');
+    const product = await subscriptionProductService.createProduct({
+      ...body,
+      images,
     });
-
-    const session = await stripe.checkout.sessions.create({
-      mode: 'subscription',
-      payment_method_types: ['card'],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      subscription_data: {
-        metadata: {
-          productName,
-          billingCycle,
-        },
-      },
-      success_url: `http://localhost:5173/success?success=true&session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `http://localhost:5173/cancel?canceled=true`,
-      metadata: { orderId: generatedOrderId },
-    });
-
-    res.json({ id: session.id });
-  } catch (error) {
-    errorLogger.error('Stripe session creation failed:', error);
-    const message =
-      error instanceof Error ? error.message : 'Unknown error occurred';
-    res.status(500).json({ error: message });
+    res.status(201).json({ success: true, data: product });
   }
-};
+);
 
-//
+//@ business logic for get all  a subscription product
+//@ method:get
+//@endpoint:api/v1/spacial/product
+export const getSubscriptionProducts = catchAsync(
+  async (req: Request, res: Response) => {
+    const products = await subscriptionProductService.getAllProducts();
+    res.status(200).json({ success: true, data: products });
+  }
+);
 
-export const handleStripeWebhook = async (req: Request, res: Response) => {
-  const sig = req.headers['stripe-signature'] as string;
-
-  try {
-    const event = stripe.webhooks.constructEvent(
-      req.body,
-      sig,
-      process.env.STRIPE_WEBHOOK_SECRET!
+//@ business logic for get subscription product by Id a subscription.
+//@ method:get
+//@endpoint:api/v1/spacial/product/:id
+export const getSubscriptionProduct = catchAsync(
+  async (req: Request, res: Response) => {
+    const product = await subscriptionProductService.getProductById(
+      req.params.id
     );
-
-    switch (event.type) {
-      case 'checkout.session.completed': {
-        const session = event.data.object as Stripe.Checkout.Session;
-
-        if (session.mode === 'subscription') {
-          // Subscription session
-          const subscriptionId = session.subscription as string;
-          logger.info('Subscription completed:', subscriptionId);
-
-          // If you want to link to your order, you need to include orderId in session.metadata
-          const orderId = session.metadata?.orderId;
-          if (orderId) {
-            const order = await SubscribeOrder.findOne({
-              orderId: parseInt(orderId, 10),
-            });
-            if (order && order.status !== 'paid') {
-              order.status = 'paid';
-              await order.save();
-
-              await sendPushNotification({
-                title: 'Subscription Successful ✅',
-                body: `Your subscription order ${orderId} was successful!`,
-                recipientToken: order.token,
-              });
-
-              console.log(
-                `📩 Push notification sent for subscription order ${orderId}`
-              );
-            }
-          }
-        } else {
-          // One-time payment
-          const orderId = session.metadata?.orderId;
-          if (orderId) {
-            const order = await SubscribeOrder.findOne({
-              orderId: parseInt(orderId, 10),
-            });
-            if (order && order.status !== 'paid') {
-              order.status = 'paid';
-              await order.save();
-
-              await sendPushNotification({
-                title: 'Payment Successful ✅',
-                body: `Your order ${orderId} was successful!`,
-                recipientToken: order.token,
-              });
-
-              console.log(`📩 Push notification sent for order ${orderId}`);
-            }
-          }
-        }
-        break;
-      }
-
-      default:
-        logger.info(`Unhandled event type ${event.type}`);
-    }
-
-    res.status(200).send();
-  } catch (err) {
-    logger.error('Webhook Error:', err);
-    res.status(400).send(`Webhook Error: ${err}`);
+    if (!product)
+      return res.status(404).json({ success: false, message: 'Not found' });
+    res.status(200).json({ success: true, data: product });
   }
-};
+);
+
+//@ business logic for updating subscription.
+//@ method:put
+//@endpoint:api/v1/spacial/product/:id
+export const updateSubscriptionProduct = catchAsync(
+  async (req: Request, res: Response) => {
+    const body = normalizeBody(req.body);
+    const images = extractFiles(req.files, 'image');
+    const product = await subscriptionProductService.updateProduct(
+      req.params.id,
+      {
+        ...body,
+        images,
+      }
+    );
+    if (!product)
+      return res.status(404).json({ success: false, message: 'Not found' });
+    res.status(200).json({ success: true, data: product });
+  }
+);
+
+//@ business logic for creating a subscription.
+//@ method:delete
+//@endpoint:api/v1/spacial/product/:id
+export const deleteSubscriptionProduct = catchAsync(
+  async (req: Request, res: Response) => {
+    const product = await subscriptionProductService.deleteProduct(
+      req.params.id
+    );
+    if (!product)
+      return res.status(404).json({ success: false, message: 'Not found' });
+    res.status(200).json({ success: true, message: 'Deleted successfully' });
+  }
+);
