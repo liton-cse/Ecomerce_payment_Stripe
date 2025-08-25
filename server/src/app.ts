@@ -22,11 +22,6 @@ app.post(
   bodyParser.raw({ type: 'application/json' }),
   handleStripeWebhook
 );
-app.post(
-  '/api/v1/products/webhook',
-  bodyParser.raw({ type: 'application/json' }),
-  handleStripeWebhook
-);
 
 // --- JSON & URL-encoded body parser for other routes ---
 app.use(express.json());

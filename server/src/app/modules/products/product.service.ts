@@ -36,25 +36,8 @@ export const sendPushNotification = async ({
   }
 };
 
-// craete a product list
-export interface CreateProductPayload
-  extends Omit<Partial<IProduct>, 'images'> {
-  images?: string[];
-}
-
-export const createProduct = async (payload: CreateProductPayload) => {
-  const { dish, price, qnty, rating, somedata, address, images = [] } = payload;
-  return await ProductModel.create({
-    dish,
-    price: Number(price),
-    qnty: Number(qnty),
-    address,
-    rating: Number(rating),
-    somedata,
-    imgdata: images[0] || '',
-    delimg: images[1] || '',
-    arrimg: images[2] || '',
-  });
+export const createProduct = async (payload: Partial<IProduct>) => {
+  return await ProductModel.create(payload);
 };
 // get all product list....
 export const getAllProducts = async () => {
@@ -66,10 +49,7 @@ export const getProductById = async (id: string) => {
 };
 
 //update the producrt list of a product
-export const updateProduct = async (
-  id: string,
-  payload: CreateProductPayload
-) => {
+export const updateProduct = async (id: string, payload: Partial<IProduct>) => {
   return await ProductModel.findByIdAndUpdate(id, payload, { new: true });
 };
 //delete a product fro database..

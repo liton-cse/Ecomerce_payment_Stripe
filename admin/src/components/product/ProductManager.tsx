@@ -105,7 +105,7 @@ function ProductManager() {
                     <Edit className="w-4 h-4 mr-2" />
                     Edit
                   </Button>
-                  <Button onClick={handleEdit} variant="secondary" size="sm">
+                  <Button variant="secondary" size="sm">
                     <Delete className="w-4 h-4 mr-2" />
                     Delete
                   </Button>

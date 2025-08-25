@@ -21,13 +21,11 @@ export const orderSchema = new Schema<IOrder>({
 const productSchema = new Schema<IProduct>(
   {
     dish: { type: String, required: true },
-    imgdata: { type: String },
     address: { type: String },
-    delimg: { type: String },
     somedata: { type: String },
     price: { type: Number, required: true },
     rating: { type: Number },
-    arrimg: { type: String },
+    image: { type: String },
     qnty: { type: Number },
   },
   { timestamps: true }

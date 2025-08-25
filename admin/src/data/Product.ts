@@ -1,13 +1,12 @@
+// Product fields configuration
 export const product = [
   { key: "dish", type: "text", placeholder: "Dish Name", required: true },
-  { key: "imgdata", type: "file", placeholder: "Dish Image" },
   { key: "address", type: "text", placeholder: "Address" },
-  { key: "delimg", type: "file", placeholder: "Delivery Image" },
   { key: "somedata", type: "text", placeholder: "Some Data" },
   { key: "price", type: "number", placeholder: "Price" },
-  { key: "rating", type: "text", placeholder: "Rating" },
-  { key: "arrimg", type: "file", placeholder: "Arr Image" },
+  { key: "rating", type: "number", placeholder: "Rating" },
   { key: "qnty", type: "number", placeholder: "Quantity" },
+  { key: "image", type: "file", placeholder: "Dish Image" },
 ];
 
 import type { UserData } from "@/type/auth/auth.type";

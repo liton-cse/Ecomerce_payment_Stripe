@@ -2,7 +2,7 @@
 import { Request, Response } from 'express';
 import catchAsync from '../../../shared/catchAsync';
 import * as subscriptionProductService from './specialProduct.service';
-import { normalizeBody, extractFiles } from '../products/product.controller';
+import { normalizeBody } from '../products/product.controller';
 
 //@ business logic for creating a subscription.
 //@ method:post

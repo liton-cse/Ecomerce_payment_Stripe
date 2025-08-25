@@ -6,6 +6,7 @@ import {
 } from "@reduxjs/toolkit";
 import axios from "axios";
 import type { Dish } from "@/type/product/product.type";
+import axiosInstance from "@/utils/axios";
 
 export interface DishState {
   dishes: Dish[];
@@ -48,25 +49,27 @@ export const fetchDishById = createAsyncThunk(
 );
 
 // Add or update dish
-export const saveDish = createAsyncThunk(
-  "dish/save",
-  async (payload: { id?: string; data: FormData }, thunkAPI) => {
-    try {
-      if (payload.id) {
-        await axios.put(`/api/dishes/${payload.id}`, payload.data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-      } else {
-        await axios.post("/api/dishes", payload.data, {
-          headers: { "Content-Type": "multipart/form-data" },
-        });
-      }
-      return payload.id || null;
-    } catch (err) {
-      return thunkAPI.rejectWithValue("Failed to save dish");
+export const saveDish = createAsyncThunk<
+  string | null, // return type
+  { id?: string; data: FormData }, // payload type
+  { rejectValue: string } // thunkAPI reject type (optional)
+>("dish/save", async ({ id, data }, thunkAPI) => {
+  try {
+    if (id) {
+      await axiosInstance.put(`/products/${id}`, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+    } else {
+      await axiosInstance.post("/products", data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
     }
+
+    return id || null;
+  } catch (err) {
+    return thunkAPI.rejectWithValue("Failed to save dish");
   }
-);
+});
 
 // Delete dish
 export const deleteDish = createAsyncThunk(

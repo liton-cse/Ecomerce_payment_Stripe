@@ -1,16 +1,12 @@
 import express from 'express';
 import * as productController from './product.controller';
-import { USER_ROLES } from '../../../enums/user';
-import auth from '../../middlewares/auth';
 import fileUploadHandler from '../../middlewares/fileUploadHandler';
+import { createCheckoutSession } from '../payment/create_session';
 
 const router = express.Router();
 
 // Normal JSON route
-router.post(
-  '/create-checkout-session',
-  productController.createCheckoutSession
-);
+router.post('/create-checkout-session', createCheckoutSession);
 router.post('/', fileUploadHandler(), productController.createProduct);
 router.get('/', productController.getProducts);
 router.get('/:id', productController.getProduct);

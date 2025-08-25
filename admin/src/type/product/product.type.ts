@@ -1,13 +1,11 @@
 export interface Dish {
   id: number;
   dish: string;
-  imgdata: string;
+  image: File;
   address: string;
-  delimg: string;
   somedata: string;
   price: number;
-  rating: string;
-  arrimg: string;
+  rating: number;
   qnty: number;
 }
 import { type JSX } from "react";
