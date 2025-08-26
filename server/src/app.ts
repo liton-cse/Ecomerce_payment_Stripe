@@ -1,7 +1,7 @@
 import cors from 'cors';
 import express, { Request, Response } from 'express';
 import bodyParser from 'body-parser';
-import { handleStripeWebhook } from './app/modules/products/product.controller';
+import { handleStripeWebhook } from './app/modules/payment/create_session';
 import router from './routes';
 import { StatusCodes } from 'http-status-codes';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';

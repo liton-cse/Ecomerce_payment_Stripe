@@ -1,7 +1,8 @@
 export interface Dish {
+  _id: any;
   id: number;
   dish: string;
-  image: File;
+  image: string;
   address: string;
   somedata: string;
   price: number;

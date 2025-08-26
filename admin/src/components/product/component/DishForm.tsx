@@ -2,9 +2,8 @@ import { type FC, useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import type { RootState, AppDispatch } from "../../../redux/app/store";
 import {
-  fetchDishById,
+  fetchDishes,
   saveDish,
-  clearCurrentDish,
 } from "../../../redux/features/product/dishSlice";
 import type { Dish } from "@/type/product/product.type";
 import { product } from "@/data/Product";
@@ -20,12 +19,9 @@ export const DishForm: FC<DishFormProps> = ({ id, onSubmitSuccess }) => {
   );
 
   const [Data, setFormData] = useState<Partial<Dish>>({});
-
   useEffect(() => {
-    if (id) dispatch(fetchDishById(id));
-    else dispatch(clearCurrentDish());
-  }, [id, dispatch]);
-
+    dispatch(fetchDishes());
+  }, [dispatch]);
   useEffect(() => {
     if (currentDish) setFormData(currentDish);
   }, [currentDish]);
@@ -52,18 +48,15 @@ export const DishForm: FC<DishFormProps> = ({ id, onSubmitSuccess }) => {
     Object.entries(Data).forEach(([key, value]) => {
       if (value === undefined || value === null) return;
 
+      // Check if the value is a file
       if (isFile(value)) {
         data.append(key, value, value.name); // Append file as-is
       } else {
-        data.append(key, String(value)); // Append strings/numbers
+        data.append(key, String(value)); // Append strings/numbers as strings
       }
     });
-
     try {
-      const result = await dispatch(saveDish({ id, data }));
-      console.log("Save result:", result);
-
-      // Check if the action was successful
+      const result = await dispatch(saveDish({ data }));
       if (saveDish.fulfilled.match(result)) {
         onSubmitSuccess?.();
       } else {

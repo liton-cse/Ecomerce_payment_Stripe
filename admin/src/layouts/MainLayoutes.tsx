@@ -43,9 +43,7 @@ const MainLayout: React.FC<MainLayoutProps> = ({ children }) => {
         />
 
         {/* Main content */}
-        <main className="flex-1 bg-white dark:bg-slate-900 rounded-t-xl shadow-inner">
-          {children}
-        </main>
+        <main className="flex-1 rounded-t-xl shadow-inner">{children}</main>
       </div>
 
       {/* Mobile overlay */}
