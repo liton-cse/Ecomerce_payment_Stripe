@@ -13,7 +13,7 @@ export interface ISubscriptionProduct {
   description: string;
   price: number; // price in your chosen currency (e.g., USD)
   billing_cycle: 'monthly' | 'yearly' | 'weekly'; // restrict to allowed values
-  image_url: string;
+  image: string | undefined;
   stripe_price_id?: string; // Stripe Price ID for checkout
   createdAt?: Date;
   updatedAt?: Date;

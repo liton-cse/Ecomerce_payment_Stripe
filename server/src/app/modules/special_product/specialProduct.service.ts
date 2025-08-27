@@ -2,28 +2,8 @@ import { SubscriptionProductModel } from './spacialProduct.order.model';
 import { ISubscriptionProduct } from './sepacialProduct.interface';
 
 // craete a product list
-export interface CreateProductPayload
-  extends Omit<Partial<ISubscriptionProduct>, 'images'> {
-  images?: string[];
-}
-
-export const createProduct = async (payload: CreateProductPayload) => {
-  const {
-    name,
-    description,
-    price,
-    billing_cycle,
-    stripe_price_id,
-    images = [],
-  } = payload;
-  return await SubscriptionProductModel.create({
-    name,
-    description,
-    price,
-    billing_cycle,
-    stripe_price_id,
-    image_url: images[0] || '',
-  });
+export const createProduct = async (payload: ISubscriptionProduct) => {
+  return await SubscriptionProductModel.create(payload);
 };
 // get all product list....
 export const getAllProducts = async () => {
@@ -37,8 +17,9 @@ export const getProductById = async (id: string) => {
 //update the producrt list of a product
 export const updateProduct = async (
   id: string,
-  payload: CreateProductPayload
+  payload: ISubscriptionProduct
 ) => {
+  console.log(payload);
   return await SubscriptionProductModel.findByIdAndUpdate(id, payload, {
     new: true,
   });

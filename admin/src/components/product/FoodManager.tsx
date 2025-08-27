@@ -7,16 +7,22 @@ import { Label } from "../ui/label";
 import { Textarea } from "../ui/textarea";
 import { Star, MapPin, Clock, Edit, Save, X, Plus, Minus } from "lucide-react";
 import { useAppDispatch, useAppSelector } from "@/redux/app/store";
-import { fetchDishes, updateDish } from "@/redux/features/product/dishSlice";
+import {
+  consumeRefresher,
+  fetchDishes,
+  updateDish,
+  deleteDish, // Add this import if you have a delete action
+} from "@/redux/features/product/dishSlice";
 import type { Dish } from "@/type/product/product.type";
 import { ClipLoader } from "react-spinners";
-
+import axiosInstance from "@/utils/axios";
 function FoodManager() {
   const dispatch = useAppDispatch();
-  const { dishes, loading } = useAppSelector((state) => state.dish);
-  const [foodData, setFoodData] = useState<Dish[]>([]); // Handle multiple dishes
+  const { dishes, loading, refresher } = useAppSelector((state) => state.dish);
+  const [foodData, setFoodData] = useState<Dish[]>([]);
   const [isEditing, setIsEditing] = useState(false);
   const [editData, setEditData] = useState<Dish | null>(null);
+  const [imageFile, setImageFile] = useState<File | null>(null); // Store actual file
 
   useEffect(() => {
     dispatch(fetchDishes());
@@ -26,96 +32,136 @@ function FoodManager() {
     setFoodData(dishes);
   }, [dishes]);
 
-  const handleEdit = (index: number) => {
-    setEditData(foodData[index]);
-    setIsEditing(true);
+  useEffect(() => {
+    if (refresher) {
+      dispatch(fetchDishes());
+      dispatch(consumeRefresher());
+    }
+  }, [refresher, dispatch]);
+
+  const handleEdit = (_id: string) => {
+    const found = foodData.find((d) => d._id === _id) || null;
+    setEditData(found);
+    setIsEditing(!!found);
+    setImageFile(null); // Reset image file when starting edit
   };
 
-  const handleSave = () => {
-    if (editData) {
-      // Handle the saving logic (update Redux state or backend API)
-      const updatedDishes = foodData.map((dish) =>
-        dish._id === editData._id ? editData : dish
-      );
-      setFoodData(updatedDishes);
-      setIsEditing(false);
+  const handleSave = async () => {
+    if (editData?._id) {
+      try {
+        // Always create FormData to maintain consistency
+        const formData = new FormData();
+        formData.append("dish", editData.dish);
+        formData.append("price", String(editData.price));
+        formData.append("rating", String(editData.rating));
+        formData.append("address", editData.address);
+        formData.append("somedata", editData.somedata);
+
+        // Only append image if there's a new file
+        if (imageFile) {
+          formData.append("image", imageFile);
+        }
+
+        await dispatch(updateDish({ _id: editData._id, data: formData }));
+
+        setIsEditing(false);
+        setEditData(null);
+        setImageFile(null);
+      } catch (error) {
+        console.error("Error updating dish:", error);
+      }
     }
   };
 
-  const handleDelete = (index: number) => {
-    console.log(index);
-    if (editData) {
-      const updatedDishes = foodData.filter(
-        (dish) => dish._id !== editData._id
-      );
-      setFoodData(updatedDishes);
-      setIsEditing(false);
-      setEditData(null); // Clear the edit state
+  const handleDelete = async (_id: string) => {
+    try {
+      // Confirm delete action
+      if (!window.confirm("Are you sure you want to delete this dish?")) {
+        return;
+      }
+      // Make sure we're passing the ID correctly
+      const result = await dispatch(deleteDish(_id));
+      // Only update local state after successful deletion
+      if (deleteDish.fulfilled.match(result)) {
+        setFoodData((prev) => prev.filter((dish) => dish._id !== _id));
+        setIsEditing(false);
+        setEditData(null);
+        setImageFile(null);
+      } else {
+        console.error("Delete failed:", result);
+      }
+    } catch (error) {
+      console.error("Error deleting dish:", error);
     }
   };
 
   const handleCancel = () => {
     setIsEditing(false);
-    setEditData(null); // Reset edit state
+    setEditData(null);
+    setImageFile(null); // Clear image file on cancel
   };
 
-  const handleQuantityChange = (
+  const handleQuantityChange = async (
     _id: string,
     action: "increase" | "decrease"
   ) => {
-    setFoodData((prev) => {
-      const updatedDishes = [...prev]; // Create a copy of the dishes array
-      const dishIndex = updatedDishes.findIndex((dish) => dish._id === _id); // Find the index of the dish by its _id
+    const dish = foodData.find((d) => d._id === _id);
+    if (!dish) return;
 
-      if (dishIndex !== -1) {
-        const dish = updatedDishes[dishIndex]; // Get the dish object at the found index
-        if (action === "increase") {
-          dish.qnty += 1; // Increase the quantity
-          dispatch(
-            updateDish({
-              _id,
-              qnty: dish.qnty,
-            })
-          ); // Dispatch the update for saving
-        } else if (action === "decrease" && dish.qnty > 0) {
-          dish.qnty -= 1; // Decrease the quantity
-        }
-      }
+    let newQnty = dish.qnty;
+    if (action === "increase") {
+      newQnty += 1;
+    } else if (action === "decrease" && dish.qnty > 0) {
+      newQnty -= 1;
+    } else {
+      return; // No change needed
+    }
 
-      return updatedDishes; // Return the updated dishes array
-    });
+    // Update local state immediately for better UX
+    setFoodData((prev) =>
+      prev.map((d) => (d._id === _id ? { ...d, qnty: newQnty } : d))
+    );
+    try {
+      await axiosInstance.patch(`/products/${_id}`, { qnty: newQnty });
+    } catch (error) {
+      console.error("Error updating quantity:", error);
+      setFoodData((prev) =>
+        prev.map((d) => (d._id === _id ? { ...d, qnty: dish.qnty } : d))
+      );
+    }
   };
 
-  // Update state for numeric fields like `rating` and `price` with type conversion
+  // Update state for various field types
   const handleChange = (field: keyof Dish, value: string) => {
-    if (field === "rating" || field === "price") {
-      // Convert to number for fields that should be numbers
-      setEditData((prev) =>
-        prev ? { ...prev, [field]: Number(value) } : prev
-      );
-    } else {
-      setEditData((prev) => (prev ? { ...prev, [field]: value } : prev));
+    if (!editData) return;
+
+    let processedValue: any = value;
+
+    // Convert to appropriate types
+    if (field === "rating" || field === "price" || field === "qnty") {
+      processedValue = value === "" ? 0 : Number(value);
     }
+
+    setEditData((prev) => (prev ? { ...prev, [field]: processedValue } : prev));
   };
 
   // Handle image file change
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      const reader = new FileReader();
+      setImageFile(file); // Store the actual file
 
+      // Create preview URL
+      const reader = new FileReader();
       reader.onloadend = () => {
         if (editData) {
           setEditData({
             ...editData,
-            image: reader.result as string, // Use base64 URL for image preview
+            image: reader.result as string, // This is just for preview
           });
         }
       };
-
-      if (file) {
-        reader.readAsDataURL(file); // Convert image to base64 string
-      }
+      reader.readAsDataURL(file);
     }
   };
 
@@ -131,7 +177,7 @@ function FoodManager() {
     <div className="space-y-6">
       {foodData.map((dish) => (
         <Card
-          key={dish._id} // Use _id as the key for each dish
+          key={dish._id}
           className="overflow-hidden hover:shadow-xl transition-all duration-300 max-w-full mx-auto"
         >
           <CardHeader className="pb-4 px-4 sm:px-6">
@@ -161,9 +207,10 @@ function FoodManager() {
                       Edit
                     </Button>
                     <Button
-                      onClick={() => handleDelete(dish._id)} // Handle delete
+                      onClick={() => handleDelete(dish._id)}
                       variant="outline"
                       size="sm"
+                      className="text-red-600 hover:text-red-700"
                     >
                       <X className="w-4 h-4 mr-2" />
                       Delete
@@ -211,6 +258,7 @@ function FoodManager() {
                         id={`dish-${dish._id}`}
                         value={editData?.dish || ""}
                         onChange={(e) => handleChange("dish", e.target.value)}
+                        placeholder="Enter dish name"
                       />
                     </div>
                     <div>
@@ -221,13 +269,17 @@ function FoodManager() {
                         accept="image/*"
                         onChange={handleImageChange}
                       />
-                      {editData?.image && (
+                      {(editData?.image || dish.image) && (
                         <img
-                          src={`${import.meta.env.VITE_IMAGE_URL}/image/${
-                            editData.image
-                          }`}
+                          src={
+                            imageFile && editData?.image?.startsWith("data:")
+                              ? editData.image // Show preview for new file
+                              : `${import.meta.env.VITE_IMAGE_URL}/image/${
+                                  dish.image
+                                }` // Show existing image
+                          }
                           alt="Preview"
-                          className="w-32 h-32 object-cover mt-2 rounded-md"
+                          className="w-32 h-32 object-cover mt-2 rounded-md border"
                         />
                       )}
                     </div>
@@ -239,6 +291,7 @@ function FoodManager() {
                         onChange={(e) =>
                           handleChange("address", e.target.value)
                         }
+                        placeholder="Enter address"
                       />
                     </div>
                   </>
@@ -304,16 +357,24 @@ function FoodManager() {
                       <Input
                         id={`price-${dish._id}`}
                         type="number"
+                        min="0"
+                        step="0.01"
                         value={editData?.price || ""}
                         onChange={(e) => handleChange("price", e.target.value)}
+                        placeholder="Enter price"
                       />
                     </div>
                     <div>
                       <Label htmlFor={`rating-${dish._id}`}>Rating</Label>
                       <Input
                         id={`rating-${dish._id}`}
+                        type="number"
+                        min="0"
+                        max="5"
+                        step="0.1"
                         value={editData?.rating || ""}
                         onChange={(e) => handleChange("rating", e.target.value)}
+                        placeholder="Enter rating (0-5)"
                       />
                     </div>
                     <div>
@@ -326,6 +387,8 @@ function FoodManager() {
                         onChange={(e) =>
                           handleChange("somedata", e.target.value)
                         }
+                        placeholder="Enter order information"
+                        rows={3}
                       />
                     </div>
                   </>

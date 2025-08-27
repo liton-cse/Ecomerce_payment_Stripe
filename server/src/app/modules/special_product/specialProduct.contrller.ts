@@ -4,16 +4,29 @@ import catchAsync from '../../../shared/catchAsync';
 import * as subscriptionProductService from './specialProduct.service';
 import { normalizeBody } from '../products/product.controller';
 
+interface FileRequest extends Request {
+  files: {
+    image?: Express.Multer.File[]; // image key holds an array of File objects
+  };
+}
 //@ business logic for creating a subscription.
 //@ method:post
 //@endpoint:api/v1/spacial/product
+
 export const createSubscriptionProduct = catchAsync(
-  async (req: Request, res: Response) => {
-    const body = normalizeBody(req.body);
-    const images = extractFiles(req.files, 'image');
+  async (req: FileRequest, res: Response) => {
+    const { name, description, price, billing_cycle, stripe_price_id } =
+      req.body;
+
+    const image = req.files?.image?.[0]?.filename;
+
     const product = await subscriptionProductService.createProduct({
-      ...body,
-      images,
+      name,
+      description,
+      price: Number(price),
+      billing_cycle,
+      image,
+      stripe_price_id,
     });
     res.status(201).json({ success: true, data: product });
   }
@@ -47,14 +60,19 @@ export const getSubscriptionProduct = catchAsync(
 //@ method:put
 //@endpoint:api/v1/spacial/product/:id
 export const updateSubscriptionProduct = catchAsync(
-  async (req: Request, res: Response) => {
-    const body = normalizeBody(req.body);
-    const images = extractFiles(req.files, 'image');
+  async (req: FileRequest, res: Response) => {
+    const { name, description, price, billing_cycle, stripe_price_id } =
+      req.body;
+    const image = req.files?.image?.[0]?.filename;
     const product = await subscriptionProductService.updateProduct(
       req.params.id,
       {
-        ...body,
-        images,
+        name,
+        description,
+        price,
+        billing_cycle,
+        image,
+        stripe_price_id,
       }
     );
     if (!product)

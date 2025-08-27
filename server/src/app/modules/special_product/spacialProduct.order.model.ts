@@ -38,7 +38,7 @@ const SubscriptionProductSchema = new Schema<ISubscriptionProduct>(
       enum: ['monthly', 'yearly', 'weekly'],
       required: true,
     },
-    image_url: {
+    image: {
       type: String,
       required: true,
     },

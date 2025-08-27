@@ -16,3 +16,16 @@ export interface Action {
   renderForm?: (onSubmitSuccess: () => void) => JSX.Element;
   handleFunction?: (id: string, onSubmitSuccess?: () => void) => void;
 }
+// subscription Product
+
+// Types
+export interface subscriptionProduct {
+  _id: string;
+  name: string;
+  description?: string;
+  price?: number;
+  category?: string;
+  image?: string;
+  stripe_price_id?: string;
+  [key: string]: any;
+}

@@ -1,14 +1,19 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { SubscriptionProduct } from "@/data/Product";
+import { useAppDispatch } from "@/redux/app/store";
+import { createProduct } from "@/redux/features/product/subscriptionSlice";
+import type { subscriptionProduct } from "@/type/product/product.type";
 
 interface AddProductProps {
   setShowForm: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const AddProduct: React.FC<AddProductProps> = ({ setShowForm }) => {
-  const [formData, setFormData] = useState<Record<string, any>>({});
-
+  const [formData, setFormData] = useState<Partial<subscriptionProduct>>({});
+  const dispatch = useAppDispatch();
+  // Type guard for File
+  const isFile = (val: any): val is File => val instanceof File;
   const handleChange = (
     e: React.ChangeEvent<
       HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
@@ -21,17 +26,35 @@ const AddProduct: React.FC<AddProductProps> = ({ setShowForm }) => {
     }));
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault(); // Prevent default form submission
 
-    setShowForm(false);
-    setFormData({});
+    const data = new FormData();
+    // Append all form fields to FormData
+    Object.entries(formData).forEach(([key, value]) => {
+      if (value == null || value == undefined) return;
+
+      if (isFile(value)) {
+        // Handle file uploads
+        data.append(key, value);
+      } else {
+        // Handle regular form fields
+        data.append(key, String(value));
+      }
+    });
+    try {
+      await dispatch(createProduct(data));
+      setShowForm(false);
+      setFormData({});
+    } catch (error) {
+      console.error("Error submitting form:", error);
+    }
   };
 
   return (
     <form
-      onSubmit={handleSubmit}
       className="mt-4 bg-white dark:bg-slate-900 p-6 rounded-2xl shadow-lg w-full max-w-xl mx-auto flex flex-col gap-4 animate-fadeIn"
+      onSubmit={handleSubmit} // Use onSubmit for the form
     >
       {SubscriptionProduct.map((field) => (
         <div key={field.name} className="flex flex-col">
@@ -80,10 +103,10 @@ const AddProduct: React.FC<AddProductProps> = ({ setShowForm }) => {
 
       <div className="flex justify-between mt-4">
         <Button
-          type="submit"
+          type="submit" // Use type="submit" here
           className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg"
         >
-          Save Product
+          Submit
         </Button>
         <Button
           type="button"

@@ -5,6 +5,7 @@ import authReducer from "../features/auth/loginSlice";
 import sidebarReducer from "../features/product/asideSlice";
 import dishReducer from "../features/product/dishSlice";
 import userReducer from "../features/user/userSliice";
+import subcribeReducer from "../features/product/subscriptionSlice";
 
 export const store = configureStore({
   reducer: {
@@ -12,6 +13,7 @@ export const store = configureStore({
     sidebar: sidebarReducer,
     dish: dishReducer,
     user: userReducer,
+    subscribe: subcribeReducer,
   },
 });
 

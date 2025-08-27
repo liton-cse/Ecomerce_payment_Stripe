@@ -4,7 +4,6 @@ import {
   createAsyncThunk,
   type PayloadAction,
 } from "@reduxjs/toolkit";
-
 import type { Dish } from "@/type/product/product.type";
 import axiosInstance from "@/utils/axios";
 
@@ -13,6 +12,7 @@ export interface DishState {
   currentDish?: Dish;
   loading: boolean;
   error?: string;
+  refresher: boolean; // 👈 add this
 }
 
 const initialState: DishState = {
@@ -20,6 +20,7 @@ const initialState: DishState = {
   currentDish: undefined,
   loading: false,
   error: undefined,
+  refresher: false,
 };
 
 // Fetch all dishes
@@ -29,7 +30,7 @@ export const fetchDishes = createAsyncThunk(
     try {
       const res = await axiosInstance.get("/products");
       return res.data.data as Dish[];
-    } catch (err) {
+    } catch {
       return thunkAPI.rejectWithValue("Failed to fetch dishes");
     }
   }
@@ -42,71 +43,56 @@ export const fetchDishById = createAsyncThunk(
     try {
       const res = await axiosInstance.get(`/api/dishes/${id}`);
       return res.data as Dish;
-    } catch (err) {
+    } catch {
       return thunkAPI.rejectWithValue("Failed to fetch dish");
     }
   }
 );
 
-// Add or update dish and update the quantity..
-// Add or update dish and update the quantity
+// Create
 export const saveDish = createAsyncThunk<
-  string | null, // return type
-  { data: FormData }, // payload type - make data required
-  { rejectValue: string } // thunkAPI reject type
+  string | null,
+  { data: FormData },
+  { rejectValue: string }
 >("dish/save", async ({ data }, thunkAPI) => {
   try {
-    const config = {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    };
-    const res = await axiosInstance.post("/products", data, config);
-    // Return the product ID if successful
+    const res = await axiosInstance.post("/products", data, {
+      headers: { "Content-Type": "multipart/form-data" },
+    });
     return res.data._id || null;
   } catch (err: any) {
-    console.error("Error while saving dish:", err);
-
-    // More detailed error logging
-    if (err.response) {
-      console.error("Response error:", err.response.data);
-      console.error("Response status:", err.response.status);
-    }
-
     return thunkAPI.rejectWithValue(
       err.response?.data?.message || "Failed to save dish"
     );
   }
 });
 
+// Update (use a different action type to avoid clashing with saveDish)
 export const updateDish = createAsyncThunk<
-  string | null, // return type
-  { _id?: string; data?: FormData; qnty?: number }, // payload type
-  { rejectValue: string } // thunkAPI reject type (optional)
->("dish/save", async ({ _id, data, qnty }, thunkAPI) => {
+  string | null,
+  { _id?: string; data?: FormData; qnty?: number },
+  { rejectValue: string }
+>("dish/update", async ({ _id, data }, thunkAPI) => {
   try {
-    if (_id && qnty) {
-      await axiosInstance.put(`/products/${_id}`, qnty);
-    } else if (_id) {
-      await axiosInstance.put(`/products/${_id}`, data);
-    } else {
-      await axiosInstance.post("/products", data);
+    if (_id) {
+      await axiosInstance.put(`/products/${_id}`, data, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
     }
-
     return _id || null;
-  } catch (err) {
+  } catch {
     return thunkAPI.rejectWithValue("Failed to save dish");
   }
 });
 
-// Delete dish
+// Delete
 export const deleteDish = createAsyncThunk(
   "dish/delete",
   async (id: string, thunkAPI) => {
     try {
-      await axiosInstance.delete(`/api/dishes/${id}`);
+      await axiosInstance.delete(`/products/${id}`);
       return id;
-    } catch (err) {
+    } catch {
       return thunkAPI.rejectWithValue("Failed to delete dish");
     }
   }
@@ -119,9 +105,14 @@ const dishSlice = createSlice({
     clearCurrentDish(state) {
       state.currentDish = undefined;
     },
+    consumeRefresher(state) {
+      // 👈 call this after another component reacts to the change
+      state.refresher = false;
+    },
   },
   extraReducers: (builder) => {
     builder
+      // fetchAll
       .addCase(fetchDishes.pending, (state) => {
         state.loading = true;
       })
@@ -136,6 +127,8 @@ const dishSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+
+      // fetchById
       .addCase(fetchDishById.pending, (state) => {
         state.loading = true;
       })
@@ -150,13 +143,44 @@ const dishSlice = createSlice({
         state.loading = false;
         state.error = action.payload as string;
       })
+
+      // saveDish — set refresher true when it finishes successfully
+      .addCase(saveDish.pending, (state) => {
+        state.loading = true;
+        state.error = undefined;
+      })
+      .addCase(saveDish.fulfilled, (state) => {
+        state.loading = false;
+        state.refresher = true; // 👈 flip on
+      })
+      .addCase(saveDish.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // inside extraReducers builder chain...
+      .addCase(updateDish.pending, (state) => {
+        state.loading = true;
+        state.error = undefined;
+      })
+      .addCase(updateDish.fulfilled, (state) => {
+        state.loading = false;
+        state.refresher = true;
+      })
+      .addCase(updateDish.rejected, (state, action) => {
+        state.loading = false;
+        state.error = action.payload as string;
+      })
+
+      // deleteDish local update (optional; left as-is)
       .addCase(deleteDish.fulfilled, (state, action: PayloadAction<string>) => {
         state.dishes = state.dishes.filter(
+          // adjust this if your Dish uses _id:string
           (dish) => dish.id !== Number(action.payload)
         );
       });
   },
 });
 
-export const { clearCurrentDish } = dishSlice.actions;
+export const { clearCurrentDish, consumeRefresher } = dishSlice.actions;
 export default dishSlice.reducer;
