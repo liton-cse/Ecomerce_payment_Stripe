@@ -54,7 +54,7 @@ export default function ManagementCard({
         {actions.map((action, i) => (
           <div key={i} className="relative">
             <Button
-              className="w-full justify-start bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 rounded-lg"
+              className="w-full justify-start text-white bg-transparent hover:bg-slate-100 dark:hover:bg-slate-800 transition-all duration-200 rounded-lg"
               variant="outline"
               onClick={() => handleButtonClick(i, !!action.renderForm)}
             >

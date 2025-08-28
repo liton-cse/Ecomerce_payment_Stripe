@@ -24,7 +24,7 @@ export interface subscriptionProduct {
   name: string;
   description?: string;
   price?: number;
-  category?: string;
+  billing_cycle?: "monthly" | "yearly";
   image?: string;
   stripe_price_id?: string;
   [key: string]: any;

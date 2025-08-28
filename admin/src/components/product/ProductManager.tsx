@@ -20,13 +20,17 @@ import AddProduct from "./component/SubscriptionForm";
 import { motion, AnimatePresence } from "framer-motion";
 import type { subscriptionProduct } from "@/type/product/product.type";
 import {
+  consumeSubscribeRefresher,
+  deleteProduct,
   fetchProducts,
   updateProduct,
 } from "@/redux/features/product/subscriptionSlice";
 import { useAppDispatch, useAppSelector } from "@/redux/app/store";
 
 function ProductManager() {
-  const { products, loading } = useAppSelector((state) => state.subscribe);
+  const { products, loading, refresher } = useAppSelector(
+    (state) => state.subscribe
+  );
   const [showForm, setShowForm] = useState(false);
   const [subscribeProduct, setSubscribeProduct] = useState<
     subscriptionProduct[]
@@ -46,6 +50,12 @@ function ProductManager() {
   useEffect(() => {
     setSubscribeProduct(products);
   }, [products, dispatch]);
+  useEffect(() => {
+    if (refresher) {
+      dispatch(fetchProducts());
+      dispatch(consumeSubscribeRefresher());
+    }
+  }, [refresher, dispatch]);
 
   const handleEdit = (_id: string) => {
     const found = subscribeProduct.find((d) => d._id === _id) || null;
@@ -103,10 +113,26 @@ function ProductManager() {
     }
   };
 
-  const handleDelete = (productId: string) => {
-    if (window.confirm("Are you sure you want to delete this subscription?")) {
-      console.log("Deleting product:", productId);
-      // Add your delete logic here
+  const handleDelete = async (productId: string) => {
+    try {
+      // Confirm delete action
+      if (!window.confirm("Are you sure you want to delete this dish?")) {
+        return;
+      }
+      // Make sure we're passing the ID correctly
+      const result = await dispatch(deleteProduct(productId));
+      // Only update local state after successful deletion
+      if (deleteProduct.fulfilled.match(result)) {
+        setSubscribeProduct((prev) =>
+          prev.filter((product) => product._id !== productId)
+        );
+        setEditData(null);
+        setImageFile(null);
+      } else {
+        console.error("Delete failed:", result);
+      }
+    } catch (error) {
+      console.error("Error deleting dish:", error);
     }
   };
 
@@ -160,11 +186,11 @@ function ProductManager() {
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
         <div className="flex flex-col gap-4">
           <Button
-            className="h-16 flex-col gap-2 bg-transparent"
+            className="h-16 flex-col gap-2 bg-transparent text-white"
             variant="outline"
             onClick={() => setShowForm((prev) => !prev)}
           >
-            <Plus className="w-5 h-5" />
+            <Plus className="w-5 h-5 text-white" />
             Add New Product
           </Button>
 
@@ -217,7 +243,8 @@ function ProductManager() {
                           </Button>
                           <Button
                             onClick={handleCancel}
-                            className="inline-flex items-center px-3 py-1.5 bg-gray-500 text-white text-sm font-medium rounded-lg hover:bg-gray-600 transition-colors"
+                            variant="outline"
+                            className="inline-flex items-center px-3 py-1.5 bg-gray-500 hover:bg-gray-600 text-white border-gray-500 hover:border-gray-600 text-sm font-medium rounded-lg transition-colors"
                           >
                             <X className="w-4 h-4 mr-1" />
                             Cancel
@@ -240,7 +267,7 @@ function ProductManager() {
                                     : null
                                 )
                               }
-                              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                             />
                           </div>
 
@@ -261,7 +288,7 @@ function ProductManager() {
                                 )
                               }
                               rows={3}
-                              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white resize-none"
+                              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 resize-none"
                             />
                           </div>
 
@@ -274,7 +301,7 @@ function ProductManager() {
                                 type="file"
                                 accept="image/*"
                                 onChange={handleImageChange}
-                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100"
                               />
                               {/* Image Preview */}
                               {(previewImage || currentEditData?.image) && (
@@ -323,7 +350,7 @@ function ProductManager() {
                                       : null
                                   )
                                 }
-                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white"
+                                className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400"
                               />
                             </div>
 
@@ -340,7 +367,9 @@ function ProductManager() {
                                     prev
                                       ? {
                                           ...prev,
-                                          billing_cycle: e.target.value,
+                                          billing_cycle: e.target.value as
+                                            | "monthly"
+                                            | "yearly",
                                         }
                                       : null
                                   )
@@ -371,7 +400,7 @@ function ProductManager() {
                                     : null
                                 )
                               }
-                              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white font-mono text-sm"
+                              className="w-full px-3 py-2 border border-gray-300 dark:border-gray-700 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white dark:bg-gray-800 text-gray-900 dark:text-white placeholder-gray-500 dark:placeholder-gray-400 font-mono text-sm"
                             />
                           </div>
                         </div>
@@ -507,7 +536,7 @@ function ProductManager() {
                           <ExternalLink className="w-4 h-4 mr-2" />
                           View in Stripe
                         </button>
-                        <button className="inline-flex items-center justify-center px-4 py-2.5 bg-white dark:bg-gray-800 text-gray-700 dark:text-gray-300 font-medium rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200">
+                        <button className="inline-flex items-center justify-center px-4 py-2.5 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 font-medium rounded-lg border border-gray-300 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all duration-200">
                           Manage Users
                         </button>
                       </div>

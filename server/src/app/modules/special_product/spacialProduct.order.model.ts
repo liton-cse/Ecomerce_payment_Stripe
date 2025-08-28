@@ -35,7 +35,7 @@ const SubscriptionProductSchema = new Schema<ISubscriptionProduct>(
     },
     billing_cycle: {
       type: String,
-      enum: ['monthly', 'yearly', 'weekly'],
+      enum: ['monthly', 'yearly'],
       required: true,
     },
     image: {

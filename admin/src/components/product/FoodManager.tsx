@@ -122,7 +122,7 @@ function FoodManager() {
       prev.map((d) => (d._id === _id ? { ...d, qnty: newQnty } : d))
     );
     try {
-      await axiosInstance.patch(`/products/${_id}`, { qnty: newQnty });
+      await axiosInstance.put(`/products/${_id}`, { qnty: newQnty });
     } catch (error) {
       console.error("Error updating quantity:", error);
       setFoodData((prev) =>
@@ -202,6 +202,7 @@ function FoodManager() {
                       onClick={() => handleEdit(dish._id)}
                       variant="outline"
                       size="sm"
+                      className="text-white"
                     >
                       <Edit className="w-4 h-4 mr-2" />
                       Edit
