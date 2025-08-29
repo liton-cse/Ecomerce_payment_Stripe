@@ -91,13 +91,13 @@ export const createCheckoutSession = async (
         token,
         status: 'pending',
       });
-
+      console.log(`${process.env.CLIENT_URL}`);
       const session = await stripe.checkout.sessions.create({
         payment_method_types: ['card'],
         line_items: lineItems,
         mode: 'payment',
-        success_url: `${process.env.CLIENT_URL}/success?orderId=${generatedOrderId}`,
-        cancel_url: `${process.env.CLIENT_URL}/cancel`,
+        success_url: `http://localhost:5173/success?orderId=${generatedOrderId}`,
+        cancel_url: `http://localhost:5173/cancel`,
         metadata: {
           orderId: generatedOrderId.toString(),
           type: 'regular_payment',
@@ -140,8 +140,8 @@ export const createCheckoutSession = async (
         mode: 'subscription',
         payment_method_types: ['card'],
         line_items: subscriptionLineItems,
-        success_url: `${process.env.CLIENT_URL}/success?success=true&session_id=${generatedOrderId}`,
-        cancel_url: `${process.env.CLIENT_URL}/cancel?canceled=true`,
+        success_url: `http://localhost:5173/success?success=true&session_id=${generatedOrderId}`,
+        cancel_url: `http://localhost:5173/cancel?canceled=true`,
         metadata: {
           orderId: generatedOrderId.toString(),
           type: 'subscription',
