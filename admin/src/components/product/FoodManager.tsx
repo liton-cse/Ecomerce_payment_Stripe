@@ -100,7 +100,6 @@ function FoodManager() {
     setEditData(null);
     setImageFile(null); // Clear image file on cancel
   };
-
   const handleQuantityChange = async (
     _id: string,
     action: "increase" | "decrease"
@@ -121,6 +120,12 @@ function FoodManager() {
     setFoodData((prev) =>
       prev.map((d) => (d._id === _id ? { ...d, qnty: newQnty } : d))
     );
+
+    // Don't make the API call if the quantity is 0
+    if (newQnty === 0) {
+      return; // Exit without making an API call if the quantity is 0
+    }
+
     try {
       await axiosInstance.put(`/products/${_id}`, { qnty: newQnty });
     } catch (error) {

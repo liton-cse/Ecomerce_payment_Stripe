@@ -18,7 +18,7 @@ import type {
   SocialMedia,
 } from "./footer.type.js";
 import { DEFAULT_FOOTER_CONFIG } from "./footerDefoultconfig.js";
-
+import LocationTracker from "../location/locationTrack.js";
 // Reusable Components
 const AnimatedSection: React.FC<AnimatedSectionProps> = ({
   children,
@@ -441,6 +441,7 @@ const FoodEcommerceFooter: React.FC<FooterProps> = ({
             )}
           </div>
         </div>
+        <LocationTracker />
       </footer>
     </div>
   );

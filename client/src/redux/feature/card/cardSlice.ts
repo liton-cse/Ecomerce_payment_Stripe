@@ -126,7 +126,6 @@ const cardSlice = createSlice({
       const itemIndexDec = state.cartItem.findIndex(
         (item) => item._id === action.payload._id
       );
-
       if (itemIndexDec >= 0) {
         const existingItem = state.cartItem[itemIndexDec];
         if (existingItem) {

@@ -16,6 +16,7 @@ import {
 import type { CartItem } from "../../type/product/product.type.js";
 import { getFcmToken } from "../../redux/feature/fcmToken/fcmTokenSlice.js";
 import { ClipLoader } from "react-spinners";
+
 const AddToCard: React.FC = () => {
   const { cartItem, loading } = useAppSelector(
     (state: RootState) => state.cart
@@ -23,7 +24,6 @@ const AddToCard: React.FC = () => {
   const [totalprice, setPrice] = useState<number>(0);
   const [totalquantity, setTotalQuantity] = useState<number>(0);
   const dispatch = useAppDispatch(); // ✅ Now typed
-
   const handleIncrement = (item: CartItem) => {
     dispatch(addToCart(item));
   };
@@ -83,7 +83,6 @@ const AddToCard: React.FC = () => {
       const result = await stripe.redirectToCheckout({
         sessionId: session.id,
       });
-
       if (result.error) {
         console.error("Stripe redirection error:", result.error.message);
       }

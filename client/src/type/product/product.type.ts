@@ -26,6 +26,7 @@ export interface CartItem {
   rating: number;
   price: number;
   qnty: number;
+  orderQnty?: number;
 }
 
 export interface CardImageProps {

@@ -23,7 +23,6 @@ const SpecialProductCard: React.FC<SpecialProductCardProps> = ({ product }) => {
     const cycleMap: Record<string, string> = {
       monthly: "/month",
       yearly: "/year",
-      weekly: "/week",
     };
     return cycleMap[cycle] || "";
   };
@@ -37,7 +36,7 @@ const SpecialProductCard: React.FC<SpecialProductCardProps> = ({ product }) => {
         priceId: product.stripe_price_id ?? "",
         productName: product.name ?? "",
         billingCycle: product.billing_cycle ?? "",
-        image_url: product.image_url ?? "",
+        image_url: product.image ?? "",
         sub_price: product.price ?? "",
         subscription: true,
       },
@@ -63,7 +62,7 @@ const SpecialProductCard: React.FC<SpecialProductCardProps> = ({ product }) => {
         aria-label={`View details for ${product.name}`}
       >
         <img
-          src={product.image_url}
+          src={`${import.meta.env.VITE_IMAGE}/image/${product?.image}`}
           alt={product.name}
           className="absolute top-0 left-0 w-full h-full object-contain p-4"
           loading="lazy"

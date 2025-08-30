@@ -68,13 +68,12 @@ const Header = () => {
                 >
                   Special Products
                 </Link>
-                <Link
-                  to="#"
+                <button
                   className="hover:text-indigo-600 transition duration-300"
                   onClick={handleLogout}
                 >
                   Logout
-                </Link>
+                </button>
               </>
             )}
           </nav>

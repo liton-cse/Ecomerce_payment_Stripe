@@ -7,6 +7,13 @@ const ProductModal: React.FC<ProductModalProps> = ({
   onClose,
   onSubscribe,
 }) => {
+  const getShortDescription = (description: string) => {
+    const words = description.split(" ");
+    if (words.length > 50) {
+      return words.slice(0, 50).join(" ") + "...";
+    }
+    return description;
+  };
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
       <div className="bg-white rounded-lg w-full max-w-3xl max-h-[90vh] overflow-y-auto shadow-lg">
@@ -39,7 +46,7 @@ const ProductModal: React.FC<ProductModalProps> = ({
           {/* Image */}
           <div className="flex-shrink-0 w-full sm:w-1/2 mb-4 sm:mb-0">
             <img
-              src={product.image_url}
+              src={`${import.meta.env.VITE_IMAGE}/image/${product?.image}`}
               alt={product.name}
               className="w-full h-56 sm:h-full min-h-[200px] object-contain rounded-lg"
               style={{ flexShrink: 0 }}
@@ -52,7 +59,9 @@ const ProductModal: React.FC<ProductModalProps> = ({
 
           {/* Content */}
           <div className="flex flex-col flex-1 space-y-4">
-            <p className="text-gray-700">{product.description}</p>
+            <p className="text-gray-700">
+              {getShortDescription(product.description)}
+            </p>
 
             <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 mt-auto">
               <span className="text-2xl sm:text-3xl font-bold text-indigo-600 flex-1">

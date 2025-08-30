@@ -1,10 +1,10 @@
 export interface SubscriptionProduct {
-  id: number;
+  _id: string;
   name: string;
   description: string;
   price: number;
-  billing_cycle: "monthly" | "yearly" | "weekly" | string;
-  image_url: string;
+  billing_cycle: "monthly" | "yearly" | string;
+  image: string;
   stripe_price_id?: string; // Added Stripe Price ID
 }
 
@@ -17,7 +17,7 @@ export interface ProductModalProps {
     name: string;
     description: string;
     price: number;
-    image_url: string;
+    image: string;
     billing_cycle: string;
     stripe_price_id?: string;
   };
@@ -32,6 +32,7 @@ export interface ProductModalProps {
 export interface SubscriptionState {
   loading: boolean;
   error: string | null;
+  subscriptions: SubscriptionProduct[];
 }
 export interface SubscribeProduct {
   priceId: string;
