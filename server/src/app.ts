@@ -6,7 +6,8 @@ import router from './routes';
 import { StatusCodes } from 'http-status-codes';
 import globalErrorHandler from './app/middlewares/globalErrorHandler';
 import { Morgan } from './shared/morgen';
-
+import session from 'express-session';
+import passport from './app/modules/auth/auth.password';
 const app = express();
 
 // --- CORS first ---
@@ -42,6 +43,18 @@ app.get('/', (req: Request, res: Response) => {
     `
   );
 });
+
+// session middleware for passport
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || 'secret',
+    resave: false,
+    saveUninitialized: false,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 // --- Global error handler ---
 app.use(globalErrorHandler);

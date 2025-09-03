@@ -3,7 +3,10 @@ import { StatusCodes } from 'http-status-codes';
 import catchAsync from '../../../shared/catchAsync';
 import sendResponse from '../../../shared/sendResponse';
 import { AuthService } from './auth.service';
-
+import { jwtHelper } from '../../../helpers/jwtHelper';
+import dotenv from 'dotenv';
+import { Secret } from 'jsonwebtoken';
+dotenv.config();
 const verifyEmail = catchAsync(async (req: Request, res: Response) => {
   const { ...verifyData } = req.body;
   const result = await AuthService.verifyEmailToDB(verifyData);
@@ -27,6 +30,30 @@ const loginUser = catchAsync(async (req: Request, res: Response) => {
     data: result.createToken,
   });
 });
+
+const authCallback = (req: Request, res: Response) => {
+  if (!req.user) {
+    return res.redirect(
+      `${process.env.CLIENT_BASE_URL}/login?error=auth_failed`
+    );
+  }
+
+  const token = jwtHelper.createToken(
+    req.user,
+    process.env.jwt_secret as Secret,
+    process.env.jwt_expire_in as string
+  );
+
+  // ✅ Send token via query param OR httpOnly cookie
+  res.cookie('token', token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+  });
+
+  // redirect to frontend with token
+  res.redirect(`${process.env.CLIENT_BASE_URL}/dashboard?token=${token}`);
+};
 
 const forgetPassword = catchAsync(async (req: Request, res: Response) => {
   const email = req.body.email;
@@ -72,4 +99,5 @@ export const AuthController = {
   forgetPassword,
   resetPassword,
   changePassword,
+  authCallback,
 };

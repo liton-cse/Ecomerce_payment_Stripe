@@ -6,6 +6,7 @@ import { Eye, EyeOff } from "lucide-react";
 import { login } from "../../redux/feature/auth/loginSlice.js";
 import LogoImage from "./LogoImage.js";
 import { useNavigate } from "react-router-dom";
+import SocialLoginButton from "./SocialLoginButton.js";
 
 const Login = () => {
   const dispatch = useDispatch<AppDispatch>();
@@ -105,6 +106,10 @@ const Login = () => {
             {loading ? "Logging in..." : "Login"}
           </button>
         </form>
+        <div className="flex flex-row justify-center item-center gap-6 m-4 p-3">
+          <SocialLoginButton provider="google" />
+          <SocialLoginButton provider="facebook" />
+        </div>
       </div>
     </div>
   );
